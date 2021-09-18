@@ -58,9 +58,7 @@ def music_download(url: str, playlist: str = '다운로드', start: int = None, 
     if end:
         ydl_opts['playlistend'] = end
     
-    if not os.path.exists(playlist):
-        os.mkdir(playlist)
-    log = f'{playlist}/download.log'
+    log = f'{playlist}.log'
     ydl_opts['download_archive'] = log
     mp3_lst = glob.glob(f'{playlist}/*.mp3')
     webm_lst = glob.glob(f'{playlist}/*.webm')
