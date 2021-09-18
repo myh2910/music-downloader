@@ -1,11 +1,14 @@
 from __future__ import unicode_literals
 import youtube_dl
-import os
 import sys
 import glob
+import os
+from colorama import Fore
 import random
 
-def music_download(url: str, playlist: str = '다운로드', start: int = None, end: int = None) -> None:
+CYAN, YELLOW, RESET = Fore.LIGHTCYAN_EX, Fore.LIGHTYELLOW_EX, Fore.RESET
+
+def music_download(url: str, playlist: str = '다운로드', start: int = None, end: int = None, ydl_opts: dict = {}) -> None:
     """
     옵션 설명
     --------
@@ -16,57 +19,65 @@ def music_download(url: str, playlist: str = '다운로드', start: int = None, 
     * `start`: `start`번째 부터 다운로드.
     * `end`: `end`번째 까지 다운로드."""
 
+    replace_chars = False
+    if sys.platform == 'win32':
+        replace_chars = True
+
+    music_lst = []
+    mp3_lst = glob.glob(f'{playlist}/*.mp3')
+    webm_lst = glob.glob(f'{playlist}/*.webm')
+
+    playlist_file = f'{playlist}.m3u'
+    log_file = f'{playlist}.log'
+
+    with open(log_file, 'w', encoding='utf8') as log:
+        for music in mp3_lst:
+            if music not in webm_lst:
+                log.write(f'youtube {music[-15:-4]}\n')
+
     ydl_opts = {
-        'format': 'bestaudio/best',
-        'outtmpl': playlist + r'/%(title)s [%(id)s].%(ext)s',
-        'writethumbnail': True,
-        'nooverwrites': True,
-        'postprocessors': [
-            {
-                'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
-            },
-            {'key': 'EmbedThumbnail'},
-            {'key': 'FFmpegMetadata'},
-        ]
+        **{
+            'format': 'bestaudio/best',
+            'outtmpl': playlist + r'/%(title)s-%(id)s.%(ext)s',
+            'writethumbnail': True,
+            'nooverwrites': True,
+            'postprocessors': [
+                {
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '320',
+                },
+                {'key': 'EmbedThumbnail'},
+                {'key': 'FFmpegMetadata'},
+            ]
+        },
+        **ydl_opts
     }
 
-    if playlist != '다운로드':
-        confirm = input(f'플레이리스트 파일을 생성하시겠습니까? (y/N): ')
+    if playlist != '다운로드':  
+        confirm = 'y'
+        if os.path.exists(playlist_file):
+            confirm = input(f'{CYAN}플레이리스트 파일을 업데이트 하시겠습니까? {YELLOW}(y/N){CYAN}: {RESET}')
         if confirm in 'Yy':
-            music_lst = []
+            print(f'{CYAN}플레이리스트에 대한 정보 추출 중...{RESET}')
             with youtube_dl.YoutubeDL(ydl_opts) as ydl:
                 playlist_dict = ydl.extract_info(url, False)
-                playlist = playlist_dict['title']
-                if sys.platform == 'win32':
-                    for video in playlist_dict['entries']:
-                        title, id = video.get('title'), video.get('id')
-                        title = "".join(i for i in title if i not in '\/:*?"<>|')
-                        music_lst.append(f'{playlist}/{title} [{id}].mp3')
-                else:
-                    for video in playlist_dict['entries']:
-                        title, id = video.get('title'), video.get('id')
-                        music_lst.append(f'{playlist}/{title} [{id}].mp3')
+                for video in playlist_dict['entries']:
+                    title, id = video.get('title'), video.get('id')
+                    if replace_chars:
+                        title = ''.join(i if i not in '[]\/:*?"<>|' else '_' for i in title)
+                    music_lst.append(f'{playlist}/{title}-{id}.mp3')
 
-            with open(f'{playlist}.m3u', 'w', encoding='utf8') as m3u:
+            with open(playlist_file, 'w', encoding='utf8') as m3u:
                 m3u.write('\n'.join(music_lst))
-            
-            start, end = None, None
 
+            start, end = None, None
     if start:
         ydl_opts['playliststart'] = start
     if end:
         ydl_opts['playlistend'] = end
-    
-    log = f'{playlist}.log'
-    ydl_opts['download_archive'] = log
-    mp3_lst = glob.glob(f'{playlist}/*.mp3')
-    webm_lst = glob.glob(f'{playlist}/*.webm')
-    with open(log, 'w', encoding='utf8') as log_file:
-        for music in mp3_lst:
-            if music not in webm_lst:
-                log_file.write(f'youtube {music[-16:-5]}\n')
-
+    ydl_opts['download_archive'] = log_file
+    print(f'{CYAN}플레이리스트 업데이트 중...{RESET}')
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
 
@@ -84,24 +95,30 @@ def lst_create(playlist: str) -> None:
             for music in lst:
                 m3u.write(music + '\n')
 
+def write_lines(file, lines: list[str]) -> None:
+    """`file`에 `lines`를 저장."""
+    file.writelines('\n'.join(i for i in lines if i != ''))
+    file.truncate()
+
 def lst_suffle(playlist: str) -> None:
     """플레이리스트 셔플 기능. 파일 `playlist`.m3u에 있는 음악들을 랜덤으로 셔플."""
 
     with open(f'{playlist}.m3u', 'r+', encoding='utf8') as m3u:
-        lines = m3u.readlines()
+        lines = [line.strip() for line in m3u.readlines()]
         m3u.seek(0)
         random.shuffle(lines)
-        m3u.writelines(lines)
-        m3u.truncate()
+        write_lines(m3u, lines)
 
-def lst_order(playlist: str, by: str = 'author') -> None:
-    """플레이리스트 정렬 기능.""" # TODO author 순대로 정렬
+# TODO author 순대로 정렬
+def lst_order(playlist: str, method: str = 'author') -> None:
+    """플레이리스트 정렬 기능."""
 
     with open(f'{playlist}.m3u', 'r+', encoding='utf8') as m3u:
-        lines = m3u.readlines()
+        lines = [line.strip() for line in m3u.readlines()]
+        if method == 'author':
+            lines = sorted(lines)
         m3u.seek(0)
-        m3u.writelines(sorted(lines))
-        m3u.truncate()
+        write_lines(m3u, lines)
 
 if __name__ == '__main__':
     music_download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf', '내가 좋아하는 노래')
