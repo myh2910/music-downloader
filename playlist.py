@@ -5,15 +5,7 @@ import glob
 import random
 
 def mp3_download(url: str, start: int = None, end: int = None) -> None:
-    """유튜브 영상 .mp3 음악 다운로드. https://github.com/ytdl-org/youtube-dl
-
-    요구사항
-    -------
-    윈도우즈의 경우
-    * `ffmpeg`: 링크 https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z 에서 .7z 파일을 다운로드 한 뒤,
-    압축을 푼 상태에서 bin 폴더에 있는 3개의 파일들을 이 파일이 있는 폴더에 저장.
-    * `youtube-dl`: 터미널에서 다음 코드를 실행. `pip install youtube-dl`
-
+    """
     옵션 설명
     --------
     * `url`: 유튜브 영상 링크.
@@ -33,8 +25,7 @@ def mp3_download(url: str, start: int = None, end: int = None) -> None:
             },
             {'key': 'EmbedThumbnail'},
             {'key': 'FFmpegMetadata'},
-        ],
-        'downloader': [{'continuedl', 'retries'}]
+        ]
     }
     if start:
         ydl_opts['playliststart'] = start
@@ -54,8 +45,11 @@ def mp3_download(url: str, start: int = None, end: int = None) -> None:
     mp3 = glob.glob(f'{playlist}/*.mp3')
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         for title, id in music_lst:
-            if f'{playlist}/{title} [{id}].mp3' not in mp3:
-                ydl.download([id])
+            if not f'{playlist}\\{title} [{id}].mp3' in mp3:
+                try:
+                    ydl.download([id])
+                except:
+                    ydl.download([id])
 
     if playlist != 'NA':
         yes_or_no = input(f'{Fore.YELLOW}플레이리스트 파일 {Fore.CYAN}{playlist}.m3u{Fore.YELLOW} 을 생성하시겠습니까? (y/n):{Fore.RESET} ')
@@ -86,11 +80,6 @@ def lst_suffle(playlist: str) -> None:
         random.shuffle(lines)
         m3u.writelines(lines)
         m3u.truncate()
-
-def lst_order(playlist: str) -> None:
-    """플레이리스트 정렬 기능. 파일 `playlist`.m3u에 있는 음악들을 알파벳 순으로 정렬."""
-
-    pass
 
 if __name__ == '__main__':
     mp3_download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf')
