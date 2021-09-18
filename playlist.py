@@ -3,7 +3,7 @@ import youtube_dl
 import sys
 import glob
 import os
-from colorama import Fore
+from colorama import init, Fore
 from timeit import default_timer as timer
 import random
 
@@ -51,15 +51,17 @@ def youtube_music(url: str, playlist: str = '다운로드', start: int = None, e
                 {'key': 'EmbedThumbnail'},
                 {'key': 'FFmpegMetadata'},
             ],
-            'downloader': [{'retries': 1}]
+            'downloader': [{'retries': 2}]
         },
         **ydl_opts
     }
 
+    init()
     if playlist != '다운로드':
         confirm = 'y'
         if os.path.exists(playlist_file):
-            confirm = input(f'{CYAN}플레이리스트 파일을 업데이트 하시겠습니까? {YELLOW}(y/N){CYAN}: {RESET}')
+            print(f'{CYAN}플레이리스트 파일을 업데이트 하시겠습니까? {YELLOW}(y/N){CYAN}: {RESET}', end='')
+            confirm = input()
         if confirm in 'Yy':
             print(f'{CYAN}플레이리스트에 대한 정보 추출 중...{RESET}')
             start_time = timer()
@@ -128,3 +130,4 @@ def lst_order(playlist: str, method: str = 'author') -> None:
 
 if __name__ == '__main__':
     youtube_music('https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf', '내가 좋아하는 노래')
+    youtube_music('https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwtw2', '잔잔한 노래')
