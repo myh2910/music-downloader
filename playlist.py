@@ -1,61 +1,75 @@
 from __future__ import unicode_literals
 import youtube_dl
-from colorama import Fore
+import os
+import sys
 import glob
 import random
 
-def mp3_download(url: str, start: int = None, end: int = None) -> None:
+def music_download(url: str, playlist: str = '다운로드', start: int = None, end: int = None, codec: str = 'mp3', thumbnail: bool = True) -> None:
     """
     옵션 설명
     --------
     * `url`: 유튜브 영상 링크.
+    * `playlist`: 플레이리스트 이름 (매우 중요!)
+    * `codec`: 음악 포맷 (디폴트: mp3)
+    * `thumbnail`: 썸네일 다운로드 여부.
 
     플레이리스트를 다운로드 하려는 경우
-    * `start`: `url` 플레이리스트의 `start`번째 부터 시작.
-    * `end`: `url` 플레이리스트의 `end`번째 까지 다운로드."""
+    * `start`: `start`번째 부터 다운로드.
+    * `end`: `end`번째 까지 다운로드."""
 
     ydl_opts = {
         'format': 'bestaudio/best',
-        'writethumbnail': True,
-        'outtmpl': r'%(playlist)s/%(title)s [%(id)s].%(ext)s',
+        'writethumbnail': thumbnail,
+        'outtmpl': playlist + r'/%(title)s [%(id)s].%(ext)s',
+        'nooverwrites': True,
         'postprocessors': [
             {
                 'key': 'FFmpegExtractAudio',
-                'preferredcodec': 'mp3',
+                'preferredcodec': codec,
             },
             {'key': 'EmbedThumbnail'},
             {'key': 'FFmpegMetadata'},
         ]
     }
+
+    if playlist != '다운로드':
+        confirm = input(f'플레이리스트 파일을 생성하시겠습니까? (y/N): ')
+        if confirm in ['Y', 'y']:
+            music_lst = []
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                playlist_dict = ydl.extract_info(url, False)
+                playlist = playlist_dict['title']
+                if sys.platform == 'win32':
+                    for video in playlist_dict['entries']:
+                        title, id = video.get('title'), video.get('id')
+                        title = "".join(i for i in title if i not in '\/:*?"<>|')
+                        music_lst.append(f'{playlist}/{title} [{id}].{codec}')
+                else:
+                    for video in playlist_dict['entries']:
+                        title, id = video.get('title'), video.get('id')
+                        music_lst.append(f'{playlist}/{title} [{id}].{codec}')
+
+            with open(f'{playlist}.m3u', 'w', encoding='utf8') as m3u:
+                m3u.write('\n'.join(music_lst))
+            
+            start, end = None, None
+
     if start:
         ydl_opts['playliststart'] = start
     if end:
         ydl_opts['playlistend'] = end
+    
+    if not os.path.exists(playlist):
+        os.mkdir(playlist)
+    log = f'{playlist}/download.log'
+    ydl_opts['download_archive'] = log
+    with open(log, 'w', encoding='utf8') as log_file:
+        for music in glob.glob(f'{playlist}/*.{codec}'):
+            log_file.write(f'youtube {music[-16:-5]}\n')
 
-    music_lst = []
-    playlist = None
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        playlist_dict = ydl.extract_info(url, False)
-        for video in playlist_dict['entries']:
-            if not playlist:
-                playlist = video.get('playlist')
-            music_lst.append((video.get('title'), video.get('id')))
-
-    ydl_opts['outtmpl'] = playlist + r'/%(title)s [%(id)s].%(ext)s'
-    mp3 = glob.glob(f'{playlist}/*.mp3')
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        for title, id in music_lst:
-            if not f'{playlist}\\{title} [{id}].mp3' in mp3:
-                try:
-                    ydl.download([id])
-                except:
-                    ydl.download([id])
-
-    if playlist != 'NA':
-        yes_or_no = input(f'{Fore.YELLOW}플레이리스트 파일 {Fore.CYAN}{playlist}.m3u{Fore.YELLOW} 을 생성하시겠습니까? (y/n):{Fore.RESET} ')
-        if yes_or_no in ['', 'Y', 'y']:
-            with open(f'{playlist}.m3u', 'w', encoding='utf8') as m3u:
-                m3u.write('\n'.join([f'{playlist}/{title} [{id}].mp3' for title, id in music_lst]))
+        ydl.download([url])
 
 def lst_create(playlist: str) -> None:
     """`download` 함수로 플레이리스트 폴더가 이미 생성되었다면 (즉, 옵션 `playlist = True`였다면),
@@ -81,5 +95,10 @@ def lst_suffle(playlist: str) -> None:
         m3u.writelines(lines)
         m3u.truncate()
 
+def lst_order(playlist: str) -> None:
+    """플레이리스트 정렬 기능. 파일 `playlist`.m3u에 있는 음악들을 알파벳 순으로 정렬."""
+
+    pass
+
 if __name__ == '__main__':
-    mp3_download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf')
+    music_download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf', '내가 좋아하는 노래')
