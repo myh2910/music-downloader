@@ -14,5 +14,4 @@
 
 ## Arch Linux
 
-* `sudo pacman -S ffmpeg`
-* `sudo pacman -S vlc`
+* `sudo pacman -S ffmpeg atomicparsley vlc`
