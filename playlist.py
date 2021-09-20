@@ -17,7 +17,7 @@ def download(url: str, codec: str = 'mp3', start: int = None, end: int = None) -
 
 	옵션 설명:
 	* `url`: 유튜브 영상 링크.
-	* `codec`: 다운로드할 파일 확장자.
+	* `codec`: 파일 확장자 (`'mp3'`, `'mp4'`).
 	* `start`: 플레이리스트의 `start`번부터 다운로드.
 	* `end`: 플레이리스트의 `end`번까지 다운로드."""
 
@@ -27,7 +27,7 @@ def download(url: str, codec: str = 'mp3', start: int = None, end: int = None) -
 	}
 	if codec == 'mp3':
 		ydl_opts['format'] = 'bestaudio/best'
-		# TODO https://www.youtube.com/watch?v=Wi5Rrbp9nGY 유튜브 썸네일이 mp3 파일에 embed 안됨.
+		# TODO: https://www.youtube.com/watch?v=Wi5Rrbp9nGY 유튜브 썸네일이 mp3 파일에 embed 안됨.
 		ydl_opts['postprocessors'] = [
 			{
 				'key': 'FFmpegExtractAudio',
@@ -145,7 +145,7 @@ def lst_order(playlist: str, method: str = 'suffle') -> None:
 			random.shuffle(lines)
 		elif method == 'name':
 			lines = sorted(lines)
-		# TODO author 순대로 정렬
+		# TODO: author 순대로 정렬
 		elif method == 'author':
 			pass
 		m3u.seek(0)
@@ -153,5 +153,7 @@ def lst_order(playlist: str, method: str = 'suffle') -> None:
 		m3u.truncate()
 
 if __name__ == '__main__':
+	# 내가 좋아하는 노래
 	download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf')
+	# 잔잔한 노래
 	download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwtw2')
