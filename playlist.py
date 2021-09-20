@@ -1,9 +1,9 @@
 from __future__ import unicode_literals
 import youtube_dl
-from youtube_dl.utils import sanitize_filename as sanitize
+from youtube_dl.utils import sanitize_filename
+from colorama import Fore, init
 import glob
 import os
-from colorama import init, Fore
 from timeit import default_timer as timer
 import random
 
@@ -27,21 +27,22 @@ def download(url: str, codec: str = 'mp3', start: int = None, end: int = None) -
 	}
 	if codec == 'mp3':
 		ydl_opts['format'] = 'bestaudio/best'
+		# TODO https://www.youtube.com/watch?v=Wi5Rrbp9nGY 유튜브 썸네일이 mp3 파일에 embed 안됨.
 		ydl_opts['postprocessors'] = [
 			{
 				'key': 'FFmpegExtractAudio',
 				'preferredcodec': 'mp3',
 				'preferredquality': '320'
 			},
-			{'key': 'EmbedThumbnail'},
-			{'key': 'FFmpegMetadata'}
+			{'key': 'FFmpegMetadata'},
+			{'key': 'EmbedThumbnail'}
 		]
 	elif codec in ['webm', 'mp4']:
 		ydl_opts['format'] = 'bestvideo+bestaudio/best'
 		ydl_opts['merge_output_format'] = codec
 		ydl_opts['postprocessors'] = [
-			{'key': 'EmbedThumbnail'},
-			{'key': 'FFmpegMetadata'}
+			{'key': 'FFmpegMetadata'},
+			{'key': 'EmbedThumbnail'}
 		]
 
 	init()
@@ -61,7 +62,7 @@ def download(url: str, codec: str = 'mp3', start: int = None, end: int = None) -
 			entries = [playlist_dict]
 		file_lst = []
 		for file in entries:
-			title, id = sanitize(file.get('title')), file.get('id')
+			title, id = sanitize_filename(file.get('title')), file.get('id')
 			file_lst.append(f'{playlist}/{title}-{id}.{codec}')
 	elapsed_time += timer()
 
