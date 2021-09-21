@@ -12,7 +12,15 @@ YELLOW = Fore.LIGHTYELLOW_EX
 MAGENTA = Fore.LIGHTMAGENTA_EX
 RESET = Fore.RESET
 
-def download(url: str, codec: str = 'mp3', start: int = None, end: int = None) -> None:
+def download(
+		url: str,
+		codec: str = 'mp3',
+		start: int = None,
+		end: int = None,
+		writethumbnail: bool = True,
+		retries: int = 2,
+		fragment_retries: int = 5
+	) -> None:
 	"""유튜브 영상 & 음악 다운로드.
 
 	옵션 설명:
@@ -23,7 +31,8 @@ def download(url: str, codec: str = 'mp3', start: int = None, end: int = None) -
 
 	ydl_opts = {
 		'outtmpl': r'%(playlist)s/%(title)s-%(id)s.%(ext)s',
-		'writethumbnail': True
+		'writethumbnail': writethumbnail,
+		'fragment_retries': fragment_retries
 	}
 	if codec == 'mp3':
 		ydl_opts['format'] = 'bestaudio/best'
@@ -99,11 +108,17 @@ def download(url: str, codec: str = 'mp3', start: int = None, end: int = None) -
 					running = False
 			if running:
 				id = os.path.splitext(file)[0][-11:]
-				try:
-					ydl.download([id])
-				except:
-					ydl.cache.remove()
-					ydl.download([id])
+				while True:
+					if retries == 0:
+						print(f'{CYAN}파일 {YELLOW}{file}{CYAN}을 다운로드할 수가 없습니다.{RESET}')
+						break
+					try:
+						ydl.download([id])
+						break
+					except:
+						print(f'{CYAN}에러 발견. 다시 다운로드 중...{RESET}')
+						ydl.cache.remove()
+						retries -= 1
 	elapsed_time += timer()
 
 	if playlist != 'NA':
@@ -154,22 +169,6 @@ def lst_order(playlist: str, method: str = 'suffle') -> None:
 
 if __name__ == '__main__':
 	# 내가 좋아하는 노래
-	# download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf')
+	download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf')
 	# 잔잔한 노래
-	# download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwtw2')
-	# SAT Short & Sweet (6-15)
-	for id in [
-		#06 'JVHaHwT1nb0', 'JOPK-fmdV5o', 'pPXt-NWUwUA', '-NRMORh0tRA',
-		#07 'mjwSRd686bI', 'uIzaL3ZHvPg', 'QU5z3lZBb9w', 'JTNPQMXKeWE',
-		#08 '4bmMBk1qpDA', 'IPzkkqogeXo', 'Z3uj6blw8kQ', 'amrLGxiT-7E',
-		#09 'shPLLQ4YFUw', 'k-yOFAjrwGI', 'NamzPa2SbAg', 'ZiY7CDu0KWQ',
-		#10
-		'LNMR8swHENk'
-		# '78UCbVvEZlg', 'j9vOZnPrTWY', 'YGU6E-GBtvY',
-		#11 'qW2aCxZ5w2k', 'fMMoJEMP3Fw', '45CHOc-4l8w', 'T7XXXe__vxA',
-		#12 '9EUpreoT2SY', 'ZNGlafycDiY', 'MesrN1Ui_uw', '1hYUdQMfv60',
-		#13 '_gsm6CuRxtc', 'c_Yz2MYfvHU', '03H7ktD2sPc',
-		#14 '8dlkqXP5vKU', 'B3gJVLt5CG4', 'h4UXuwHD4xs', '81qnCthyw7s',
-		#15 'DS3VkE6Fozw', 'sUydSb-HuRg', '13_-yKJbQlg', 'jvV-oNJ9k-k'
-	]:
-		download(id, 'mp4')
+	download('https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwtw2')
