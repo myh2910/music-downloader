@@ -1,3 +1,5 @@
+*.py
 *.exe
-*.m3u
-**
+playlist/!.py
+download/
+**__pycache__
