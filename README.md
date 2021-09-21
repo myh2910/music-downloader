@@ -1,10 +1,13 @@
 # 개요
 
-유튜브 mp3 음악 다운로드. https://github.com/ytdl-org/youtube-dl
+유튜브 영상 & 음악 다운로드. https://github.com/ytdl-org/youtube-dl
 
 # 요구사항
 
+파이썬에서 `youtube-dl` 패키지를 설치.
 * `pip install youtube-dl`
+
+그밖에도 ffmpeg, AtomicParsley, VLC media player을 설치.
 
 ## Windows
 
