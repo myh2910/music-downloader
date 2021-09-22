@@ -20,10 +20,14 @@ def download(
 	"""유튜브 영상 & 음악 다운로드.
 
 	옵션 설명:
-	* `url`: 유튜브 영상 링크.
+	* `url`: 유튜브 링크.
 	* `codec`: 파일 확장자 (`'mp3'`, `'mp4'`).
-	* `start`: 플레이리스트의 `start`번부터 다운로드.
-	* `end`: 플레이리스트의 `end`번까지 다운로드.
+	* `start`: 플레이리스트의 시작점을 나타내는 정수.
+	* `end`: 플레이리스트의 종점을 나타내는 정수.
+	* `home`: 플레이리스트를 다운로드 할 폴더 이름.
+	* `writethumbnail`: 썸네일 이미지를 파일에 추가.
+	* `retries`: 오류 발생 시 다운로드를 반복할 최대 횟수.
+	* `fragment_retries`: 오류 발생 시 영상 fragment 다운로드를 반복할 최대 횟수.
 	"""
 	ydl_opts = {
 		'outtmpl': home + r'/%(playlist)s/%(title)s-%(id)s.%(ext)s',

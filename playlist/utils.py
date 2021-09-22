@@ -4,11 +4,11 @@ import random
 from .constants import *
 
 def lst_create(playlist: str, home: str = HOME):
-	"""`download` 함수로 플레이리스트 폴더가 이미 생성되었다면,
-	이 함수가 실행되는 순간 플레이리스트 `playlist`.m3u 파일이 생성됨.
+	"""플레이리스트 파일 `playlist`.m3u 생성.
 
 	옵션 설명:
 	* `playlist`:  플레이리스트 이름.
+	* `home`: 플레이리스트를 포함하고 있는 폴더 이름.
 	"""
 	if os.path.exists(f'{home}/{playlist}'):
 		lst = glob.glob(f'{home}/{playlist}/*')
@@ -30,7 +30,8 @@ def lst_order(playlist: str, method: str = 'suffle', home: str = HOME):
 	- `method`: 정렬 기준. (`suffle`, `name`, `author`)
 		- `suffle`: 셔플 기능. (기본)
 		- `name`: 이름 순대로 정렬.
-		- `author`: 아티스트 기준.
+		- `author`: 아티스트 기준으로 정렬.
+	- `home`: 플레이리스트를 포함하고 있는 폴더 이름.
 	"""
 	if os.path.exists(f'{home}/{playlist}.m3u'):
 		with open(f'{home}/{playlist}.m3u', 'r+', encoding='utf8') as m3u:
