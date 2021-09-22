@@ -49,23 +49,23 @@ def download(
 			{'key': 'EmbedThumbnail'}
 		]
 	else:
-		print(f'{RED}[ERROR] {CYAN}알맞은 파일 확장자를 선택해 주십시오.{RESET}')
+		print(f"{ERROR} 파일을 {INPUT}'{codec}'{RESET} 확장자로 다운로드할 수 없습니다.")
 		return False
 
 	init()
-	print(f'{CYAN}웹페이지 정보 추출 중...{RESET}')
+	print(f'{DOWNLOAD} 웹페이지 정보 추출 중...')
 	elapsed_time = -timer()
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 		i = retries
 		while True:
 			if i == 0:
-				print(f'{RED}[ERROR] {CYAN}추출이 불가능합니다. 다시 시도하세요.{RESET}')
+				print(f'{ERROR} 웹페이지 추출이 불가능합니다.')
 				return False
 			try:
 				playlist_dict = ydl.extract_info(url, False)
 				break
 			except:
-				print(f'{RED}[WARNING] {CYAN}에러 발견. 다시 추출 중...{RESET}')
+				print(f'{WARNING} 에러 발견. 다시 시도 중...')
 				ydl.cache.remove()
 				i -= 1
 		try:
@@ -83,12 +83,14 @@ def download(
 	if playlist != 'NA':
 		playlist_file = f'{home}/{playlist}.m3u'
 		if os.path.exists(playlist_file):
-			print(f'{CYAN}플레이리스트 파일을 업데이트 하시겠습니까? {MAGENTA}(y/N){CYAN}: {RESET}', end='')
+			print(f'{UPDATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET}을 업데이트 하시겠습니까? {INPUT}(y/N){RESET}: ', end='')
 			confirm = input()
 		else:
-			print(f'{CYAN}플레이리스트 파일 생성 중...{RESET}')
+			print(f'{CREATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET} 생성 중...')
 			confirm = 'y'
 		if confirm in ['Y', 'y']:
+			if not os.path.exists(home):
+				os.mkdir(home)
 			with open(playlist_file, 'w', encoding='utf8') as m3u:
 				m3u.write('\n'.join(file_lst))
 	total = len(file_lst)
@@ -99,14 +101,15 @@ def download(
 
 	ydl_opts['outtmpl'] = f'{home}/{playlist}' + r'/%(title)s-%(id)s.%(ext)s'
 	norm_lst = [os.path.normpath(f'{home}/{file}') for file in file_lst]
-	downloaded = glob.glob(f'{home}/{playlist}/*')
+	downloaded = [os.path.normpath(file) for file in glob.glob(f'{home}/{playlist}/*')]
 
 	elapsed_time -= timer()
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+		if playlist != 'NA':
+			print(f'{DOWNLOAD} 플레이리스트 {INPUT}{playlist}{RESET} 다운로드 중...')
 		for i in range(start-1, end):
 			file = norm_lst[i]
-			filename = os.path.split(file)[1]
-			print(f'{CYAN}파일 {YELLOW}{filename}{CYAN} 다운로드 중... {MAGENTA}({i+1}/{total}){RESET}')
+			print(f'{DOWNLOAD} 파일 {FILE}{os.path.relpath(file, home)}{RESET} 다운로드 중... {INDEX}({i+1}/{total}){RESET}')
 			running = True
 			if file in downloaded:
 				if len(glob.glob(f'{os.path.splitext(file)[0]}.*')) == 1:
@@ -116,23 +119,23 @@ def download(
 				j = retries
 				while True:
 					if j == 0:
-						print(f'{RED}[ERROR] {CYAN}파일을 다운로드할 수가 없습니다.{RESET}')
+						print(f'{ERROR} 파일을 다운로드할 수 없습니다.')
 						break
 					try:
 						ydl.download([id])
 						break
 					except:
-						print(f'{RED}[WARNING] {CYAN}에러 발견. 다시 다운로드 중...{RESET}')
+						print(f'{WARNING} 에러 발견. 다시 다운로드 중...')
 						ydl.cache.remove()
 						j -= 1
 	elapsed_time += timer()
 
 	if playlist != 'NA':
-		for file in downloaded:
-			if not file in norm_lst:
-				print(f'{RED}[WARNING] {CYAN}파일 {YELLOW}{os.path.split(file)[1]}{CYAN}을 플레이리스트에서 찾을 수 없습니다. 지우겠습니까? {MAGENTA}(y/N){CYAN}: {RESET}', end='')
+		for file in glob.glob(f'{home}/{playlist}/*'):
+			if not os.path.normpath(file) in norm_lst:
+				print(f'{WARNING} 파일 {FILE}{os.path.relpath(file, home)}{RESET}을 플레이리스트에서 찾을 수 없습니다. 지우겠습니까? {INPUT}(y/N){RESET}: ', end='')
 				confirm = input()
 				if confirm in ['Y', 'y']:
 					os.remove(file)
 
-	print(f'{CYAN}다운로드 완료. 걸린 시간: {YELLOW}{elapsed_time}{CYAN}초.{RESET}')
+	print(f'{FINISHED} 다운로드가 완료되었습니다. 총 {NUMBER}{elapsed_time}{RESET}초가 걸렸습니다.')
