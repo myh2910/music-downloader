@@ -10,6 +10,7 @@ def lst_create(playlist: str, home: str = HOME):
 	* `playlist`:  플레이리스트 이름.
 	* `home`: 플레이리스트를 포함하고 있는 폴더 이름.
 	"""
+	init()
 	if os.path.exists(f'{home}/{playlist}'):
 		lst = glob.glob(f'{home}/{playlist}/*')
 		if lst == []:
@@ -33,6 +34,7 @@ def lst_order(playlist: str, method: str = 'suffle', home: str = HOME):
 		- `author`: 아티스트 기준으로 정렬.
 	- `home`: 플레이리스트를 포함하고 있는 폴더 이름.
 	"""
+	init()
 	if os.path.exists(f'{home}/{playlist}.m3u'):
 		with open(f'{home}/{playlist}.m3u', 'r+', encoding='utf8') as m3u:
 			lines = [line.strip() for line in m3u.readlines()]

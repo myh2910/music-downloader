@@ -1,7 +1,6 @@
 from __future__ import unicode_literals
 import youtube_dl
 from youtube_dl.utils import sanitize_filename
-from colorama import init
 import glob
 import os
 from timeit import default_timer as timer
@@ -29,6 +28,7 @@ def download(
 	* `retries`: 오류 발생 시 다운로드를 반복할 최대 횟수.
 	* `fragment_retries`: 오류 발생 시 영상 fragment 다운로드를 반복할 최대 횟수.
 	"""
+	init()
 	ydl_opts = {
 		'outtmpl': home + r'/%(playlist)s/%(title)s-%(id)s.%(ext)s',
 		'writethumbnail': writethumbnail,
@@ -56,7 +56,6 @@ def download(
 		print(f"{ERROR} 파일을 {INPUT}'{codec}'{RESET} 확장자로 다운로드할 수 없습니다.")
 		return False
 
-	init()
 	print(f'{DOWNLOAD} 웹페이지 정보 추출 중...')
 	elapsed_time = -timer()
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:

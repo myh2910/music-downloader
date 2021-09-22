@@ -1,4 +1,4 @@
-from colorama import Fore
+from colorama import init, Fore
 
 # colors
 RED = Fore.RED
