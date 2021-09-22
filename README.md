@@ -1,13 +1,14 @@
 # 개요
 
-유튜브 영상 & 음악 다운로드. https://github.com/ytdl-org/youtube-dl
+파이썬 (`youtube-dl`)[https://github.com/ytdl-org/youtube-dl] 패키지를 이용한 유튜브 영상 & 음악 다운로드 프로그램.
 
 # 요구사항
 
-파이썬에서 `youtube-dl` 패키지를 설치.
-* `pip install youtube-dl`
+파이썬에서 `youtube-dl`와 `colorama` 패키지들을 설치.
 
-그밖에도 ffmpeg, AtomicParsley, VLC media player을 설치.
+* `pip install youtube-dl colorama`
+
+그리고 아래와 같이 ffmpeg, AtomicParsley, VLC media player을 설치.
 
 ## Windows
 
