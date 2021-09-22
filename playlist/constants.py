@@ -20,5 +20,5 @@ NUMBER = Fore.LIGHTGREEN_EX
 INDEX = Fore.LIGHTMAGENTA_EX
 INPUT = Fore.LIGHTMAGENTA_EX
 
-# string
+# home directory
 HOME = 'download'
