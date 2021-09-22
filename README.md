@@ -1,6 +1,6 @@
 # 개요
 
-파이썬 (`youtube-dl`)[https://github.com/ytdl-org/youtube-dl] 패키지를 이용한 유튜브 영상 & 음악 다운로드 프로그램.
+파이썬 [youtube-dl](https://github.com/ytdl-org/youtube-dl "youtube-dl") 패키지를 이용한 유튜브 영상 & 음악 다운로드 프로그램.
 
 # 요구사항
 
