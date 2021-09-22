@@ -8,7 +8,7 @@
 
 * `pip install youtube-dl colorama`
 
-그리고 아래와 같이 ffmpeg, AtomicParsley, VLC media player을 설치.
+그리고 아래와 같이 ffmpeg, AtomicParsley, VLC media player들을 설치.
 
 ## Windows
 
