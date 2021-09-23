@@ -11,10 +11,11 @@ def download(
 	codec: str = 'mp3',
 	start: int = None,
 	end: int = None,
+	playlist_name: str = None,
 	home: str = HOME,
 	writethumbnail: bool = True,
 	retries: int = 2,
-	fragment_retries: int = 5
+	fragment_retries: int = 3
 ):
 	"""유튜브 영상 & 음악 다운로드.
 
@@ -23,17 +24,22 @@ def download(
 	* `codec`: 파일 확장자 (`'mp3'`, `'mp4'`).
 	* `start`: 플레이리스트의 시작점을 나타내는 정수.
 	* `end`: 플레이리스트의 종점을 나타내는 정수.
+	* `playlist_name`: 플레이리스트 이름.
 	* `home`: 플레이리스트를 다운로드 할 폴더 이름.
 	* `writethumbnail`: 썸네일 이미지를 파일에 추가.
-	* `retries`: 오류 발생 시 다운로드를 반복할 최대 횟수.
+	* `retries`: HTTP 오류 발생 시 다운로드를 반복할 최대 횟수.
 	* `fragment_retries`: 오류 발생 시 영상 fragment 다운로드를 반복할 최대 횟수.
 	"""
 	init()
 	ydl_opts = {
 		'outtmpl': home + r'/%(playlist)s/%(title)s-%(id)s.%(ext)s',
 		'writethumbnail': writethumbnail,
-		'fragment_retries': fragment_retries
+		'fragment_retries': fragment_retries,
+		'retries': fragment_retries,
+		'cachedir': False
 	}
+	if playlist_name:
+		ydl_opts['outtmpl'] = f'{home}/{playlist_name}' + r'/%(title)s-%(id)s.%(ext)s'
 	if codec == 'mp3':
 		ydl_opts['format'] = 'bestaudio/best'
 		ydl_opts['postprocessors'] = [
@@ -69,13 +75,18 @@ def download(
 				break
 			except:
 				print(f'{WARNING} 에러 발견. 다시 시도 중...')
-				ydl.cache.remove()
 				i -= 1
 		try:
-			playlist = playlist_dict['title']
+			if playlist_name:
+				playlist = playlist_name
+			else:
+				playlist = playlist_dict['title']
 			entries = playlist_dict['entries']
 		except:
-			playlist = 'NA'
+			if playlist_name:
+				playlist = playlist_name
+			else:
+				playlist = 'NA'
 			entries = [playlist_dict]
 		file_lst = []
 		for file in entries:
@@ -123,13 +134,16 @@ def download(
 				while True:
 					if j == 0:
 						print(f'{ERROR} 파일을 다운로드할 수 없습니다.')
+						for k in glob.glob(f'{os.path.splitext(file)[0]}.*'):
+							os.remove(k)
 						break
 					try:
 						ydl.download([id])
 						break
 					except:
 						print(f'{WARNING} 에러 발견. 다시 다운로드 중...')
-						ydl.cache.remove()
+						for k in glob.glob(f'{os.path.splitext(file)[0]}.*'):
+							os.remove(k)
 						j -= 1
 	elapsed_time += timer()
 
