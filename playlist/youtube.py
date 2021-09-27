@@ -17,10 +17,10 @@ def download(
 	retries: int = 2,
 	fragment_retries: int = 3
 ):
-	"""유튜브 영상 & 음악 다운로드.
+	"""영상 및 음악 다운로드.
 
 	옵션 설명:
-	* `url`: 유튜브 링크.
+	* `url`: 영상 및 플레이리스트 링크.
 	* `codec`: 파일 확장자 (`'mp3'`, `'mp4'`).
 	* `start`: 플레이리스트의 시작점을 나타내는 정수.
 	* `end`: 플레이리스트의 종점을 나타내는 정수.
@@ -59,7 +59,7 @@ def download(
 			{'key': 'EmbedThumbnail'}
 		]
 	else:
-		print(f"{ERROR} 파일을 {INPUT}'{codec}'{RESET} 확장자로 다운로드할 수 없습니다.")
+		print(f"{ERROR} 파일 확장자 {INPUT}'{codec}'{RESET}는 지원되지 않습니다.")
 		return False
 
 	print(f'{DOWNLOAD} 웹페이지 정보 추출 중...')
@@ -88,10 +88,18 @@ def download(
 			else:
 				playlist = 'NA'
 			entries = [playlist_dict]
-		file_lst = []
+		prop_lst = []
+		total = 0
 		for file in entries:
-			title, id = sanitize_filename(file.get('title')), file.get('id')
-			file_lst.append(f'{playlist}/{title}-{id}.{codec}')
+			prop_lst.append({
+				'name': f"{playlist}/{sanitize_filename(file.get('title'))}-{file.get('id')}.{codec}",
+				'url': file.get('webpage_url')
+			})
+			total += 1
+		if not start:
+			start = 1
+		if not end:
+			end = total
 	elapsed_time += timer()
 
 	if playlist != 'NA':
@@ -106,15 +114,10 @@ def download(
 			if not os.path.exists(home):
 				os.mkdir(home)
 			with open(playlist_file, 'w', encoding='utf8') as m3u:
-				m3u.write('\n'.join(file_lst))
-	total = len(file_lst)
-	if not start:
-		start = 1
-	if not end:
-		end = total
+				m3u.write('\n'.join(prop['name'] for prop in prop_lst))
 
 	ydl_opts['outtmpl'] = f'{home}/{playlist}' + r'/%(title)s-%(id)s.%(ext)s'
-	norm_lst = [os.path.normpath(f'{home}/{file}') for file in file_lst]
+	norm_lst = [os.path.normpath(f"{home}/{prop['name']}") for prop in prop_lst]
 	downloaded = [os.path.normpath(file) for file in glob.glob(f'{home}/{playlist}/*')]
 
 	elapsed_time -= timer()
@@ -129,7 +132,6 @@ def download(
 				if len(glob.glob(f'{os.path.splitext(file)[0]}.*')) == 1:
 					running = False
 			if running:
-				id = os.path.splitext(file)[0][-11:]
 				j = retries
 				while True:
 					if j == 0:
@@ -138,7 +140,7 @@ def download(
 							os.remove(k)
 						break
 					try:
-						ydl.download([id])
+						ydl.download([prop_lst[i]['url']])
 						break
 					except:
 						print(f'{WARNING} 에러 발견. 다시 다운로드 중...')
