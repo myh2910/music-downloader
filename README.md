@@ -4,7 +4,7 @@
 
 # 설치
 
-다음과 같이 파이썬에서 `youtube-dl`와 `colorama` 패키지들을 설치.
+다음과 같이 파이썬에서 `youtube-dl`과 `colorama` 패키지들을 설치.
 
 * `pip install youtube-dl colorama`
 
