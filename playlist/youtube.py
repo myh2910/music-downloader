@@ -110,7 +110,7 @@ def download(
 		else:
 			print(f'{CREATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET} 생성 중...')
 			confirm = 'y'
-		if confirm in ['Y', 'y']:
+		if confirm.strip() in ['Y', 'y']:
 			if not os.path.exists(home):
 				os.mkdir(home)
 			with open(playlist_file, 'w', encoding='utf8') as m3u:
@@ -154,7 +154,7 @@ def download(
 			if not os.path.normpath(file) in norm_lst:
 				print(f'{WARNING} 파일 {FILE}{os.path.relpath(file, home)}{RESET}을 플레이리스트에서 찾을 수 없습니다. 지우겠습니까? {INPUT}(y/N){RESET}: ', end='')
 				confirm = input()
-				if confirm in ['Y', 'y']:
+				if confirm.strip() in ['Y', 'y']:
 					os.remove(file)
 
 	print(f'{FINISHED} 다운로드가 완료되었습니다. 총 {NUMBER}{elapsed_time}{RESET}초가 걸렸습니다.')
