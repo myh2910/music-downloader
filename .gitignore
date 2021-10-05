@@ -1,5 +1,6 @@
 /*.py
 !/example.py
 *.exe
+*/
+!playlist/
 **__pycache__/
-download/
