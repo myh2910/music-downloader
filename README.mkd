@@ -22,4 +22,7 @@
 
 # 실행
 
-본 리포지터리 폴더에 파이썬 파일(예: `playlist.py`)을 생성 후 실행.(예: `python playlist.py`)
+본 리포지터리 폴더에 파이썬 파일[^file]을 생성 후 실행.[^run]
+
+[^file]: 예: playlist.py
+[^run]: 예: `python playlist.py`
