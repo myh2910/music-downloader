@@ -1,6 +1,6 @@
 # 개요
 
-파이썬 [`youtube-dl`](https://github.com/ytdl-org/youtube-dl) 패키지를 이용한 영상 및 음악 다운로드 프로그램. [여기](https://github.com/ytdl-org/youtube-dl/blob/master/docs/supportedsites.md)에서 지원되는 웹사이트들을 확인.
+파이썬 [youtube-dl](https://github.com/ytdl-org/youtube-dl) 패키지를 이용한 영상 및 음악 다운로드 프로그램. [여기](https://github.com/ytdl-org/youtube-dl/blob/master/docs/supportedsites.md)에서 지원되는 웹사이트들을 확인.
 
 # 설치
 
@@ -22,7 +22,7 @@
 
 # 실행
 
-본 리포지터리 폴더에 파이썬 파일[^file]을 생성 후 실행.[^run]
+본 리포지터리 폴더에 파이썬 파일[^create]을 생성 후 실행.[^run]
 
-[^file]: 예: playlist.py
+[^create]: 예: playlist.py
 [^run]: 예: `python playlist.py`
