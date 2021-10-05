@@ -15,8 +15,9 @@ def download(
 	home: str = HOME,
 	writethumbnail: bool = True,
 	retries: int = 2,
-	fragment_retries: int = 3
-):
+	fragment_retries: int = 3,
+	auto: bool = False
+) -> float:
 	"""영상 및 음악 다운로드.
 
 	옵션 설명:
@@ -29,6 +30,7 @@ def download(
 	* `writethumbnail`: 썸네일 이미지를 파일에 추가.
 	* `retries`: HTTP 오류 발생 시 다운로드를 반복할 최대 횟수.
 	* `fragment_retries`: 오류 발생 시 영상 fragment 다운로드를 반복할 최대 횟수.
+	* `auto`: 다운로드 자동화.
 	"""
 	init()
 	ydl_opts = {
@@ -105,8 +107,12 @@ def download(
 	if playlist != 'NA':
 		playlist_file = f'{home}/{playlist}.m3u'
 		if os.path.exists(playlist_file):
-			print(f'{UPDATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET}을 업데이트 하시겠습니까? {INPUT}(y/N){RESET}: ', end='')
-			confirm = input()
+			if auto:
+				print(f'{CREATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET} 업데이트 중...')
+				confirm = 'y'
+			else:
+				print(f'{UPDATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET}을 업데이트 하시겠습니까? {INPUT}(y/N){RESET}: ', end='')
+				confirm = input()
 		else:
 			print(f'{CREATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET} 생성 중...')
 			confirm = 'y'
@@ -126,12 +132,13 @@ def download(
 			print(f'{DOWNLOAD} 플레이리스트 {INPUT}{playlist}{RESET} 다운로드 중...')
 		for i in range(start-1, end):
 			file = norm_lst[i]
-			print(f'{DOWNLOAD} 파일 {FILE}{os.path.relpath(file, home)}{RESET} 다운로드 중... {INDEX}({i+1}/{total}){RESET}')
 			running = True
 			if file in downloaded:
 				if len(glob.glob(f'{os.path.splitext(file)[0]}.*')) == 1:
+					print(f'{DOWNLOAD} 파일 {FILE}{os.path.relpath(file, home)}{RESET}이 이미 존재합니다. {INDEX}({i+1}/{total}){RESET}')
 					running = False
 			if running:
+				print(f'{DOWNLOAD} 파일 {FILE}{os.path.relpath(file, home)}{RESET} 다운로드 중... {INDEX}({i+1}/{total}){RESET}')
 				j = retries
 				while True:
 					if j == 0:
@@ -152,9 +159,14 @@ def download(
 	if playlist != 'NA':
 		for file in glob.glob(f'{home}/{playlist}/*'):
 			if not os.path.normpath(file) in norm_lst:
-				print(f'{WARNING} 파일 {FILE}{os.path.relpath(file, home)}{RESET}을 플레이리스트에서 찾을 수 없습니다. 지우겠습니까? {INPUT}(y/N){RESET}: ', end='')
-				confirm = input()
+				if auto:
+					print(f'{WARNING} 파일 {FILE}{os.path.relpath(file, home)}{RESET} 삭제 중...')
+					confirm = 'y'
+				else:
+					print(f'{WARNING} 파일 {FILE}{os.path.relpath(file, home)}{RESET}을 플레이리스트에서 찾을 수 없습니다. 지우겠습니까? {INPUT}(y/N){RESET}: ', end='')
+					confirm = input()
 				if confirm.strip() in ['Y', 'y']:
 					os.remove(file)
 
 	print(f'{FINISHED} 다운로드가 완료되었습니다. 총 {NUMBER}{elapsed_time}{RESET}초가 걸렸습니다.')
+	return elapsed_time
