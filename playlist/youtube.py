@@ -62,7 +62,7 @@ def download(
 		]
 	else:
 		print(f"{ERROR} 파일 확장자 {INPUT}'{codec}'{RESET}는 지원되지 않습니다.")
-		return False
+		return 0
 
 	print(f'{DOWNLOAD} 웹페이지 정보 추출 중...')
 	elapsed_time = -timer()
@@ -71,7 +71,7 @@ def download(
 		while True:
 			if i == 0:
 				print(f'{ERROR} 웹페이지 추출이 불가능합니다.')
-				return False
+				return 0
 			try:
 				playlist_dict = ydl.extract_info(url, False)
 				break
