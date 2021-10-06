@@ -9,14 +9,14 @@ from .constants import *
 def time_converter(seconds: float) -> str:
 	minutes, seconds = divmod(int(seconds), 60)
 	hours, minutes = divmod(minutes, 60)
-	time_lst = [f'{NUMBER}{i}{RESET}{INPUT}{j}{RESET}' for i, j in [(hours, '시간'), (minutes, '분'), (seconds, '초')]]
-	if hours != 0:
-		elapsed_time = '{} {} {}'.format(*time_lst)
-	elif minutes != 0:
-		elapsed_time = '{} {}'.format(*time_lst[1:])
+	time_lst = [f'{NUMBER}{i}{RESET}{j}' for i, j in [(hours, '시간'), (minutes, '분'), (seconds, '초')]]
+	if hours > 0:
+		k = 0
+	elif minutes > 0:
+		k = 1
 	else:
-		elapsed_time = '{}'.format(*time_lst[2])
-	return f'총 {elapsed_time}가 걸렸습니다.'
+		k = 2
+	return f'총 {" ".join(time_lst[k:])}가 걸렸습니다.'
 
 def download(
 	url: str,
