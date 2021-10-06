@@ -4,6 +4,7 @@ from youtube_dl.utils import sanitize_filename
 import glob
 import os
 from timeit import default_timer as timer
+from datetime import timedelta
 from .constants import *
 
 def download(
@@ -77,6 +78,7 @@ def download(
 				break
 			except:
 				print(f'{WARNING} 에러 발견. 다시 시도 중...')
+				ydl.cache.remove()
 				i -= 1
 		try:
 			if playlist_name:
@@ -151,6 +153,7 @@ def download(
 						break
 					except:
 						print(f'{WARNING} 에러 발견. 다시 다운로드 중...')
+						ydl.cache.remove()
 						for k in glob.glob(f'{os.path.splitext(file)[0]}.*'):
 							os.remove(k)
 						j -= 1
@@ -168,5 +171,5 @@ def download(
 				if confirm.strip() in ['Y', 'y']:
 					os.remove(file)
 
-	print(f'{FINISHED} 다운로드가 완료되었습니다. 총 {NUMBER}{elapsed_time}{RESET}초가 걸렸습니다.')
+	print(f'{FINISHED} 다운로드가 완료되었습니다. 걸린 시간: {NUMBER}{timedelta(seconds=int(elapsed_time))}{RESET}')
 	return elapsed_time

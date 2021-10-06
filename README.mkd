@@ -38,5 +38,5 @@ for url in [
 ]:
 	elapsed_time += download(url, auto=True)
 
-print(f'{FINISHED} 모든 다운로드가 완료되었습니다. 총 {NUMBER}{elapsed_time}{RESET}초가 걸렸습니다.')
+print(f'{FINISHED} 모든 다운로드가 완료되었습니다. 걸린 시간: {NUMBER}{timedelta(seconds=int(elapsed_time))}{RESET}')
 ```
