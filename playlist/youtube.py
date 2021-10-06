@@ -4,8 +4,19 @@ from youtube_dl.utils import sanitize_filename
 import glob
 import os
 from timeit import default_timer as timer
-from datetime import timedelta
 from .constants import *
+
+def time_converter(seconds: float) -> str:
+	minutes, seconds = divmod(int(seconds), 60)
+	hours, minutes = divmod(minutes, 60)
+	time_lst = [f'{NUMBER}{i}{RESET}{INPUT}{j}{RESET}' for i, j in [(hours, '시간'), (minutes, '분'), (seconds, '초')]]
+	if hours != 0:
+		elapsed_time = '{} {} {}'.format(*time_lst)
+	elif minutes != 0:
+		elapsed_time = '{} {}'.format(*time_lst[1:])
+	else:
+		elapsed_time = '{}'.format(*time_lst[2])
+	return f'총 {elapsed_time}가 걸렸습니다.'
 
 def download(
 	url: str,
@@ -171,5 +182,5 @@ def download(
 				if confirm.strip() in ['Y', 'y']:
 					os.remove(file)
 
-	print(f'{FINISHED} 다운로드가 완료되었습니다. 걸린 시간: {NUMBER}{timedelta(seconds=int(elapsed_time))}{RESET}')
+	print(f'{FINISHED} 다운로드가 완료되었습니다. {time_converter(elapsed_time)}')
 	return elapsed_time
