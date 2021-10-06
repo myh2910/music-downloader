@@ -20,9 +20,23 @@
 
 * `sudo pacman -S ffmpeg atomicparsley vlc`
 
-## 실행
+## 예시
 
-본 리포지터리 폴더에 파이썬 파일을 생성 후 실행.[^example]
+다음과 같은 코드를 playlist.py 파일에 저장 후 `python playlist.py`와 같이 실행.
 
-[^example]: 예: [example.py](example.py)와 같은 파이썬 파일 생성 후 `python
-	example.py`와 같이 실행.
+```python
+from playlist import *
+
+elapsed_time = 0
+for url in [
+	# 내가 좋아하는 노래
+	'https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf',
+	# 잔잔한 노래
+	'https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwtw2',
+	# 클래식 음악
+	'https://www.youtube.com/playlist?list=PL4kYDj2_jcU0FkYiLWFi9_0vfajBFgyPy'
+]:
+	elapsed_time += download(url, auto=True)
+
+print(f'{FINISHED} 모든 다운로드가 완료되었습니다. 총 {NUMBER}{elapsed_time}{RESET}초가 걸렸습니다.')
+```
