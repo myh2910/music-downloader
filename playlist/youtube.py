@@ -24,8 +24,9 @@ def download(
 	start: int = None,
 	end: int = None,
 	playlist_name: str = None,
+	write_playlist: bool = True,
 	home: str = HOME,
-	writethumbnail: bool = True,
+	write_thumbnail: bool = True,
 	retries: int = 2,
 	fragment_retries: int = 3,
 	auto: bool = False
@@ -38,8 +39,9 @@ def download(
 	* `start`: 플레이리스트의 시작점을 나타내는 정수.
 	* `end`: 플레이리스트의 종점을 나타내는 정수.
 	* `playlist_name`: 플레이리스트 이름.
+	* `write_playlist`: 플레이리스트 파일 생성 여부.
 	* `home`: 플레이리스트를 다운로드 할 폴더 이름.
-	* `writethumbnail`: 썸네일 이미지를 파일에 추가.
+	* `write_thumbnail`: 썸네일 이미지를 파일에 추가.
 	* `retries`: HTTP 오류 발생 시 다운로드를 반복할 최대 횟수.
 	* `fragment_retries`: 오류 발생 시 영상 fragment 다운로드를 반복할 최대 횟수.
 	* `auto`: 다운로드 자동화.
@@ -47,7 +49,7 @@ def download(
 	init()
 	ydl_opts = {
 		'outtmpl': home + r'/%(playlist)s/%(title)s-%(id)s.%(ext)s',
-		'writethumbnail': writethumbnail,
+		'writethumbnail': write_thumbnail,
 		'fragment_retries': fragment_retries,
 		'retries': fragment_retries,
 		'cachedir': False
@@ -117,7 +119,7 @@ def download(
 			end = total
 	elapsed_time += timer()
 
-	if playlist != 'NA':
+	if playlist != 'NA' and write_playlist:
 		playlist_file = f'{home}/{playlist}.m3u'
 		if os.path.exists(playlist_file):
 			if auto:
