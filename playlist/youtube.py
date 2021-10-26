@@ -9,18 +9,18 @@ from .constants import *
 def time_converter(seconds: float) -> str:
 	minutes, seconds = divmod(int(seconds), 60)
 	hours, minutes = divmod(minutes, 60)
-	time_lst = [f'{NUMBER}{i}{RESET}{j}' for i, j in [(hours, '시간'), (minutes, '분'), (seconds, '초')]]
+	time_lst = [f"{NUMBER}{i}{RESET}{j}" for i, j in [(hours, "시간"), (minutes, "분"), (seconds, "초")]]
 	if hours > 0:
 		k = 0
 	elif minutes > 0:
 		k = 1
 	else:
 		k = 2
-	return f'총 {" ".join(time_lst[k:])}가 걸렸습니다.'
+	return f"총 {' '.join(time_lst[k:])}가 걸렸습니다."
 
 def download(
 	url: str,
-	codec: str = 'mp3',
+	codec: str = "mp3",
 	start: int = None,
 	end: int = None,
 	playlist_name: str = None,
@@ -35,7 +35,7 @@ def download(
 
 	옵션 설명:
 	* `url`: 영상 및 플레이리스트 링크.
-	* `codec`: 파일 확장자 (`'mp3'`, `'mp4'`).
+	* `codec`: 파일 확장자 (`"mp3"`, `"mp4"`).
 	* `start`: 플레이리스트의 시작점을 나타내는 정수.
 	* `end`: 플레이리스트의 종점을 나타내는 정수.
 	* `playlist_name`: 플레이리스트 이름.
@@ -48,69 +48,67 @@ def download(
 	"""
 	init()
 	ydl_opts = {
-		'outtmpl': home + r'/%(playlist)s/%(title)s-%(id)s.%(ext)s',
-		'writethumbnail': write_thumbnail,
-		'fragment_retries': fragment_retries,
-		'retries': fragment_retries,
-		'cachedir': False
+		"writethumbnail": write_thumbnail,
+		"fragment_retries": fragment_retries,
+		"retries": fragment_retries,
+		"cachedir": False
 	}
-	if playlist_name:
-		ydl_opts['outtmpl'] = f'{home}/{playlist_name}' + r'/%(title)s-%(id)s.%(ext)s'
-	if codec == 'mp3':
-		ydl_opts['format'] = 'bestaudio/best'
-		ydl_opts['postprocessors'] = [
+	if codec == "mp3":
+		ydl_opts["format"] = "bestaudio/best"
+		ydl_opts["postprocessors"] = [
 			{
-				'key': 'FFmpegExtractAudio',
-				'preferredcodec': 'mp3',
-				'preferredquality': '320'
+				"key": "FFmpegExtractAudio",
+				"preferredcodec": "mp3",
+				"preferredquality": "320"
 			},
-			{'key': 'FFmpegMetadata'},
-			{'key': 'EmbedThumbnail'}
+			{"key": "FFmpegMetadata"},
+			{"key": "EmbedThumbnail"}
 		]
-	elif codec in ['webm', 'mp4']:
-		ydl_opts['format'] = 'bestvideo+bestaudio/best'
-		ydl_opts['merge_output_format'] = codec
-		ydl_opts['postprocessors'] = [
-			{'key': 'FFmpegMetadata'},
-			{'key': 'EmbedThumbnail'}
+	elif codec in ["webm", "mp4"]:
+		ydl_opts["format"] = "bestvideo+bestaudio/best"
+		ydl_opts["merge_output_format"] = codec
+		ydl_opts["postprocessors"] = [
+			{"key": "FFmpegMetadata"},
+			{"key": "EmbedThumbnail"}
 		]
 	else:
-		print(f"{ERROR} 파일 확장자 {INPUT}'{codec}'{RESET}는 지원되지 않습니다.")
+		print(f"{ERROR} 파일 확장자 {INPUT}\"{codec}\"{RESET}는 지원되지 않습니다.")
 		return 0
 
-	print(f'{DOWNLOAD} 웹페이지 정보 추출 중...')
+	print(f"{DOWNLOAD} 웹페이지 정보 추출 중...")
 	elapsed_time = -timer()
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 		i = retries
 		while True:
 			if i == 0:
-				print(f'{ERROR} 웹페이지 추출이 불가능합니다.')
+				print(f"{ERROR} 웹페이지 추출이 불가능합니다.")
 				return 0
 			try:
 				playlist_dict = ydl.extract_info(url, False)
 				break
 			except:
-				print(f'{WARNING} 에러 발견. 다시 시도 중...')
+				print(f"{WARNING} 에러 발견. 다시 시도 중...")
 				ydl.cache.remove()
 				i -= 1
 		try:
 			if playlist_name:
 				playlist = playlist_name
 			else:
-				playlist = playlist_dict['title']
-			entries = playlist_dict['entries']
+				playlist = playlist_dict["title"]
+			entries = playlist_dict["entries"]
 		except:
 			if playlist_name:
 				playlist = playlist_name
 			else:
-				playlist = 'NA'
+				playlist = "NA"
 			entries = [playlist_dict]
+		playlist = sanitize_filename(playlist)
 		prop_lst = []
 		total = 0
 		for file in entries:
 			prop_lst.append({
-				'name': f"{playlist}/{sanitize_filename(file.get('title'))}-{file.get('id')}.{codec}",
-				'url': file.get('webpage_url')
+				"name": f"{playlist}/{sanitize_filename(file.get('title'))}-{file.get('id')}.{codec}",
+				"url": file.get("webpage_url")
 			})
 			total += 1
 		if not start:
@@ -119,70 +117,70 @@ def download(
 			end = total
 	elapsed_time += timer()
 
-	if playlist != 'NA' and write_playlist:
-		playlist_file = f'{home}/{playlist}.m3u'
+	if playlist != "NA" and write_playlist:
+		playlist_file = f"{home}/{playlist}.m3u"
 		if os.path.exists(playlist_file):
 			if auto:
-				print(f'{CREATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET} 업데이트 중...')
-				confirm = 'y'
+				print(f"{CREATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET} 업데이트 중...")
+				confirm = "y"
 			else:
-				print(f'{UPDATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET}을 업데이트 하시겠습니까? {INPUT}(y/N){RESET}: ', end='')
+				print(f"{UPDATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET}을 업데이트 하시겠습니까? {INPUT}(y/N){RESET}: ", end="")
 				confirm = input()
 		else:
-			print(f'{CREATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET} 생성 중...')
-			confirm = 'y'
-		if confirm.strip() in ['Y', 'y']:
+			print(f"{CREATE} 플레이리스트 파일 {FILE}{playlist}.m3u{RESET} 생성 중...")
+			confirm = "y"
+		if confirm.strip() in ["Y", "y"]:
 			if not os.path.exists(home):
 				os.mkdir(home)
-			with open(playlist_file, 'w', encoding='utf8') as m3u:
-				m3u.write('\n'.join(prop['name'] for prop in prop_lst))
+			with open(playlist_file, "w", encoding="utf8") as m3u:
+				m3u.write("\n".join(prop["name"] for prop in prop_lst))
 
-	ydl_opts['outtmpl'] = f'{home}/{playlist}' + r'/%(title)s-%(id)s.%(ext)s'
+	ydl_opts["outtmpl"] = f"{home}/{playlist}" + r"/%(title)s-%(id)s.%(ext)s"
 	norm_lst = [os.path.normpath(f"{home}/{prop['name']}") for prop in prop_lst]
-	downloaded = [os.path.normpath(file) for file in glob.glob(f'{home}/{playlist}/*')]
+	downloaded = [os.path.normpath(file) for file in glob.glob(f"{home}/{playlist}/*")]
 
 	elapsed_time -= timer()
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-		if playlist != 'NA':
-			print(f'{DOWNLOAD} 플레이리스트 {INPUT}{playlist}{RESET} 다운로드 중...')
+		if playlist != "NA":
+			print(f"{DOWNLOAD} 플레이리스트 {INPUT}{playlist}{RESET} 다운로드 중...")
 		for i in range(start-1, end):
 			file = norm_lst[i]
 			running = True
 			if file in downloaded:
-				if len(glob.glob(f'{os.path.splitext(file)[0]}.*')) == 1:
-					print(f'{DOWNLOAD} 파일 {FILE}{os.path.relpath(file, home)}{RESET}이 이미 존재합니다. {INDEX}({i+1}/{total}){RESET}')
+				if len(glob.glob(f"{os.path.splitext(file)[0]}.*")) == 1:
+					print(f"{DOWNLOAD} 파일 {FILE}{os.path.relpath(file, home)}{RESET}이 이미 존재합니다. {INDEX}({i+1}/{total}){RESET}")
 					running = False
 			if running:
-				print(f'{DOWNLOAD} 파일 {FILE}{os.path.relpath(file, home)}{RESET} 다운로드 중... {INDEX}({i+1}/{total}){RESET}')
+				print(f"{DOWNLOAD} 파일 {FILE}{os.path.relpath(file, home)}{RESET} 다운로드 중... {INDEX}({i+1}/{total}){RESET}")
 				j = retries
 				while True:
 					if j == 0:
-						print(f'{ERROR} 파일을 다운로드할 수 없습니다.')
-						for k in glob.glob(f'{os.path.splitext(file)[0]}.*'):
+						print(f"{ERROR} 파일을 다운로드할 수 없습니다.")
+						for k in glob.glob(f"{os.path.splitext(file)[0]}.*"):
 							os.remove(k)
 						break
 					try:
-						ydl.download([prop_lst[i]['url']])
+						ydl.download([prop_lst[i]["url"]])
 						break
 					except:
-						print(f'{WARNING} 에러 발견. 다시 다운로드 중...')
+						print(f"{WARNING} 에러 발견. 다시 다운로드 중...")
 						ydl.cache.remove()
-						for k in glob.glob(f'{os.path.splitext(file)[0]}.*'):
+						for k in glob.glob(f"{os.path.splitext(file)[0]}.*"):
 							os.remove(k)
 						j -= 1
 	elapsed_time += timer()
 
-	if playlist != 'NA':
-		for file in glob.glob(f'{home}/{playlist}/*'):
+	if playlist != "NA":
+		for file in glob.glob(f"{home}/{playlist}/*"):
 			if not os.path.normpath(file) in norm_lst:
 				if auto:
-					print(f'{WARNING} 파일 {FILE}{os.path.relpath(file, home)}{RESET} 삭제 중...')
-					confirm = 'y'
+					print(f"{WARNING} 파일 {FILE}{os.path.relpath(file, home)}{RESET} 삭제 중...")
+					confirm = "y"
 				else:
-					print(f'{WARNING} 파일 {FILE}{os.path.relpath(file, home)}{RESET}을 플레이리스트에서 찾을 수 없습니다. 지우겠습니까? {INPUT}(y/N){RESET}: ', end='')
+					print(f"{WARNING} 파일 {FILE}{os.path.relpath(file, home)}{RESET}을 플레이리스트에서 찾을 수 없습니다. 지우겠습니까? {INPUT}(y/N){RESET}: ", end="")
 					confirm = input()
-				if confirm.strip() in ['Y', 'y']:
+				if confirm.strip() in ["Y", "y"]:
 					os.remove(file)
 
-	print(f'{FINISHED} 다운로드가 완료되었습니다. {time_converter(elapsed_time)}')
+	print(f"{FINISHED} 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 	return elapsed_time
