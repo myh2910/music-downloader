@@ -1,6 +1,6 @@
 # playlist
 
-파이썬 [youtube-dl](https://github.com/ytdl-org/youtube-dl) 패키지를 이용한 영상 및 음악 다운로드 프로그램. [여기](https://github.com/ytdl-org/youtube-dl/blob/master/docs/supportedsites.md)에서 지원되는 웹사이트들을 확인.
+파이썬 [youtube-dl](https://github.com/ytdl-org/youtube-dl) 패키지를 이용한 영상 및 음악 다운로드 프로그램. [여기](https://github.com/ytdl-org/youtube-dl/blob/master/docs/supportedsites.md)에서 지원되는 웹사이트를 확인.
 
 ## 설치
 
@@ -24,7 +24,7 @@
 
 다음 코드를 playlist.py 파일에 저장 후 `python playlist.py`와 같이 실행.
 
-### 예시 1 (비디오 다운로드)
+### 예시 1: 영상 다운로드
 
 ```py
 from playlist import *
@@ -35,7 +35,7 @@ elapsed_time = download("https://www.youtube.com/watch?v=mAd35515jro", "mp4", au
 print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 ```
 
-### 예시 2 (플레이리스트 다운로드)
+### 예시 2: 플레이리스트 다운로드
 
 ```py
 from playlist import *
@@ -52,7 +52,7 @@ for url in [
 print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 ```
 
-### 예시 3 (삼성 플레이리스트로 내보내기)
+### 예시 3: 삼성 플레이리스트로 내보내기
 
 ```py
 from playlist import *
