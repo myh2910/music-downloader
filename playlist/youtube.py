@@ -43,6 +43,7 @@ def download(
 	* `end`: 플레이리스트의 종점을 나타내는 정수.
 	* `playlist_name`: 플레이리스트 이름.
 	* `write_playlist`: 플레이리스트 파일 생성 여부.
+	* `export_to_smpl`: 삼성 플레이리스트 파일 생성 여부.
 	* `home`: 플레이리스트를 다운로드 할 폴더 이름.
 	* `write_thumbnail`: 썸네일 이미지를 파일에 추가.
 	* `retries`: HTTP 오류 발생 시 다운로드를 반복할 최대 횟수.
