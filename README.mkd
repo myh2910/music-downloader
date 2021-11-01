@@ -31,6 +31,7 @@ from playlist import *
 
 # 해외에서 떡상중이라는 공포 카드게임 (우주하마)
 elapsed_time = download("https://www.youtube.com/watch?v=mAd35515jro", codec = "mp4", auto = True)
+
 print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 ```
 
@@ -47,6 +48,7 @@ for url in [
 	"https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwtw2"
 ]:
 	elapsed_time += download(url, auto = True)
+
 print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 ```
 
@@ -68,5 +70,6 @@ for url in [
 	"https://www.youtube.com/playlist?list=OLAK5uy_mJQgJg3fqotcUcRs5AijgBLfderDqIEwE"
 ]:
 	elapsed_time += download(url, export_to_smpl = True, folder = "/클래식 음악", auto = True)
+
 print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 ```
