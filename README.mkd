@@ -24,18 +24,7 @@
 
 다음 코드를 playlist.py 파일에 저장 후 `python playlist.py`와 같이 실행.
 
-### 예시 1: 영상 다운로드
-
-```py
-from playlist import *
-
-# 해외에서 떡상중이라는 공포 카드게임 (우주하마)
-elapsed_time = download("https://www.youtube.com/watch?v=mAd35515jro", "mp4", auto = True)
-
-print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
-```
-
-### 예시 2: 플레이리스트 다운로드
+### 예시 1: 플레이리스트 다운로드
 
 ```py
 from playlist import *
@@ -48,6 +37,17 @@ for url in [
 	"https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwtw2"
 ]:
 	elapsed_time += download(url, auto = True)
+
+print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
+```
+
+### 예시 2: 영상 다운로드
+
+```py
+from playlist import *
+
+# 해외에서 떡상중이라는 공포 카드게임 (우주하마)
+elapsed_time = download("https://www.youtube.com/watch?v=mAd35515jro", "mp4", auto = True)
 
 print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 ```
