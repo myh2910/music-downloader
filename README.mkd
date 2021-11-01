@@ -30,7 +30,7 @@
 from playlist import *
 
 # 해외에서 떡상중이라는 공포 카드게임 (우주하마)
-elapsed_time = download("https://www.youtube.com/watch?v=mAd35515jro", codec = "mp4", auto = True)
+elapsed_time = download("https://www.youtube.com/watch?v=mAd35515jro", "mp4", auto = True)
 
 print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 ```
