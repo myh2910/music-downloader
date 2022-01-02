@@ -1,6 +1,7 @@
 from colorama import init, Fore
 
 # colors
+BLUE = Fore.BLUE
 RED = Fore.RED
 GREEN = Fore.GREEN
 YELLOW = Fore.YELLOW

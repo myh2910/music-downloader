@@ -168,6 +168,10 @@ def download(
 	norm_lst = [os.path.normpath(f"{home}/{prop['name']}") for prop in prop_lst]
 	downloaded = [os.path.normpath(file) for file in glob.glob(f"{home}/{playlist}/*")]
 
+	add_lst = []
+	tmp_lst = []
+	del_lst = []
+
 	elapsed_time -= timer()
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
 		if playlist != "NA":
@@ -181,6 +185,7 @@ def download(
 					running = False
 			if running:
 				print(f"{DOWNLOAD} 파일 {FILE}{os.path.relpath(file, home)}{RESET} 다운로드 중... {INDEX}({i+1}/{total}){RESET}")
+				add_lst.append(file)
 				j = retries
 				while True:
 					try:
@@ -191,6 +196,8 @@ def download(
 							print(f"{ERROR} 파일을 다운로드할 수 없습니다.")
 							for k in glob.glob(f"{os.path.splitext(file)[0]}.*"):
 								os.remove(k)
+							add_lst.pop()
+							tmp_lst.append(file)
 							break
 						print(f"{WARNING} 에러 발생. 다시 다운로드 중...")
 						ydl.cache.remove()
@@ -210,6 +217,13 @@ def download(
 					confirm = input()
 				if confirm.strip() in ["Y", "y"]:
 					os.remove(file)
+					del_lst.append(file)
 
 	print(f"{FINISHED} 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
+	for file in add_lst:
+		print(f"{GREEN}+{RESET} {FILE}{os.path.relpath(file, home)}{RESET}")
+	for file in tmp_lst:
+		print(f"{YELLOW}△{RESET} {FILE}{os.path.relpath(file, home)}{RESET}")
+	for file in del_lst:
+		print(f"{RED}~{RESET} {FILE}{os.path.relpath(file, home)}{RESET}")
 	return elapsed_time
