@@ -23,32 +23,25 @@
 ## 예시 1: 플레이리스트 다운로드
 
 ```py
-from playlist import *
+from playlist import download
 
-elapsed_time = 0
-for url in [
-	# 내가 좋아하는 노래
-	"https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf",
-	# 잔잔한 노래
-	"https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwtw2"
-]:
-	elapsed_time += download(url, auto = True)
+# 내가 좋아하는 노래
+download("https://www.youtube.com/playlist?list=PLL1k3JLqzzPQjXlpuevJFMswY0NjRWdxf", export_to_smpl=True, auto=True)
 
-print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
+# 잔잔한 노래
+download("https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwtw2", auto=True)
 ```
 
 ## 예시 2: 영상 다운로드
 
 ```py
-from playlist import *
+from playlist import download
 
 # 해외에서 떡상중이라는 공포 카드게임 (우주하마)
-elapsed_time = download("https://www.youtube.com/watch?v=mAd35515jro", "mp4", auto = True)
-
-print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
+download("https://www.youtube.com/watch?v=mAd35515jro", "mp4", auto=True)
 ```
 
-## 예시 3: 삼성 플레이리스트로 내보내기
+## 예시 3: 여러 플레이리스트를 한 폴더에 저장
 
 ```py
 from playlist import *
@@ -65,7 +58,7 @@ for url in [
 	# Tchaikovsky: Swan Lake, Op. 20
 	"https://www.youtube.com/playlist?list=OLAK5uy_mJQgJg3fqotcUcRs5AijgBLfderDqIEwE"
 ]:
-	elapsed_time += download(url, export_to_smpl = True, folder = "/클래식 음악", auto = True)
+	elapsed_time += download(url, export_to_smpl=True, folder="/클래식 음악", auto=True)
 
 print(f"{FINISHED} 모든 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 ```

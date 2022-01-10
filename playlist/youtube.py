@@ -222,12 +222,13 @@ def download(
 					os.remove(file)
 					del_lst.append(file)
 
-	print(f"{FINISHED} 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
-	with open(f"{home}/{playlist}.diff", "w", encoding="utf8") as diff_file:
+	with open(f"{home}/{playlist}.diff", "w", encoding="utf8") as diff:
 		for file in add_lst:
-			diff_file.write(f"+ {os.path.relpath(file, home)}\n")
+			diff.write(f"+ {os.path.relpath(file, home)}\n")
 		for file in del_lst:
-			diff_file.write(f"- {os.path.relpath(file, home)}\n")
+			diff.write(f"- {os.path.relpath(file, home)}\n")
 		for file in tmp_lst:
-			diff_file.write(f"! {os.path.relpath(file, home)}\n")
+			diff.write(f"! {os.path.relpath(file, home)}\n")
+
+	print(f"{FINISHED} 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 	return elapsed_time
