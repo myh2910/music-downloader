@@ -101,7 +101,10 @@ def download(
 			if playlist_name:
 				playlist = playlist_name
 			else:
-				playlist = playlist_dict["title"]
+				try:
+					playlist = playlist_dict["title"]
+				except:
+					playlist = playlist_dict["webpage_url_basename"]
 			entries = playlist_dict["entries"]
 		except:
 			if playlist_name:
@@ -169,8 +172,8 @@ def download(
 	downloaded = [os.path.normpath(file) for file in glob.glob(f"{home}/{playlist}/*")]
 
 	add_lst = []
-	tmp_lst = []
 	del_lst = []
+	tmp_lst = []
 
 	elapsed_time -= timer()
 	with youtube_dl.YoutubeDL(ydl_opts) as ydl:
@@ -220,10 +223,11 @@ def download(
 					del_lst.append(file)
 
 	print(f"{FINISHED} 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
-	for file in add_lst:
-		print(f"{GREEN}+{RESET} {FILE}{os.path.relpath(file, home)}{RESET}")
-	for file in tmp_lst:
-		print(f"{YELLOW}△{RESET} {FILE}{os.path.relpath(file, home)}{RESET}")
-	for file in del_lst:
-		print(f"{RED}~{RESET} {FILE}{os.path.relpath(file, home)}{RESET}")
+	with open(f"{home}/{playlist}.diff", "w", encoding="utf8") as diff_file:
+		for file in add_lst:
+			diff_file.write(f"+ {os.path.relpath(file, home)}\n")
+		for file in del_lst:
+			diff_file.write(f"- {os.path.relpath(file, home)}\n")
+		for file in tmp_lst:
+			diff_file.write(f"! {os.path.relpath(file, home)}\n")
 	return elapsed_time
