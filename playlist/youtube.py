@@ -45,6 +45,7 @@ def download(
 	* `write_playlist`: 플레이리스트 파일 생성 여부.
 	* `export_to_smpl`: 삼성 플레이리스트 파일 생성 여부.
 	* `home`: 플레이리스트를 다운로드 할 폴더 이름.
+	* `folder`: 여러 플레이리스트를 묶어서 저장할 폴더 이름.
 	* `write_thumbnail`: 썸네일 이미지를 파일에 추가.
 	* `retries`: HTTP 오류 발생 시 다운로드를 반복할 최대 횟수.
 	* `fragment_retries`: 오류 발생 시 영상 fragment 다운로드를 반복할 최대 횟수.
@@ -222,13 +223,14 @@ def download(
 					os.remove(file)
 					del_lst.append(file)
 
-	with open(f"{home}/{playlist}.diff", "w", encoding="utf8") as diff:
-		for file in add_lst:
-			diff.write(f"+ {os.path.relpath(file, home)}\n")
-		for file in del_lst:
-			diff.write(f"- {os.path.relpath(file, home)}\n")
-		for file in tmp_lst:
-			diff.write(f"! {os.path.relpath(file, home)}\n")
+	if add_lst or del_lst or tmp_lst:
+		with open(f"{home}/{playlist}.diff", "w", encoding="utf8") as diff:
+			for file in add_lst:
+				diff.write(f"+ {os.path.relpath(file, home)}\n")
+			for file in del_lst:
+				diff.write(f"- {os.path.relpath(file, home)}\n")
+			for file in tmp_lst:
+				diff.write(f"! {os.path.relpath(file, home)}\n")
 
 	print(f"{FINISHED} 다운로드가 완료되었습니다. {time_converter(elapsed_time)}")
 	return elapsed_time

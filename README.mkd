@@ -41,7 +41,7 @@ from playlist import download
 download("https://www.youtube.com/watch?v=mAd35515jro", "mp4", auto=True)
 ```
 
-## 예시 3: 여러 플레이리스트를 한 폴더에 저장
+## 예시 3: 여러 플레이리스트를 묶어서 한 폴더에 저장
 
 ```py
 from playlist import *
