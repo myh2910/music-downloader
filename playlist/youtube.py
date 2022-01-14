@@ -5,6 +5,7 @@ from youtube_dl.utils import ExtractorError, DownloadError
 import glob
 import os
 from timeit import default_timer as timer
+from datetime import datetime
 from .constants import *
 
 def time_converter(seconds: float) -> str:
@@ -168,7 +169,7 @@ def download(
 						for i, prop in enumerate(prop_lst)))
 					smpl.write("\n], \"sortBy\": 4}")
 
-	ydl_opts["outtmpl"] = f"{home}/{playlist}" + r"/%(title)s-%(id)s.%(ext)s"
+	ydl_opts["outtmpl"] = r"{}/{}/%(title)s-%(id)s.%(ext)s".format(home, playlist)
 	norm_lst = [os.path.normpath(f"{home}/{prop['name']}") for prop in prop_lst]
 	downloaded = [os.path.normpath(file) for file in glob.glob(f"{home}/{playlist}/*")]
 
@@ -224,7 +225,10 @@ def download(
 					del_lst.append(file)
 
 	if add_lst or del_lst or tmp_lst:
-		with open(f"{home}/{playlist}.diff", "w", encoding="utf8") as diff:
+		with open(f"{home}/{playlist}.diff", "a", encoding="utf8") as diff:
+			diff.write("@ {} (+{} -{} !{})\n".format(
+				datetime.now().strftime("%Y-%m-%d %H:%M:%S"), len(add_lst), len(del_lst), len(tmp_lst)
+			))
 			for file in add_lst:
 				diff.write(f"+ {os.path.relpath(file, home)}\n")
 			for file in del_lst:
