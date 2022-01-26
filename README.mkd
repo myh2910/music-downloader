@@ -22,7 +22,7 @@
 
 ## 예시 1: 플레이리스트 다운로드
 
-```py
+```python
 from playlist import download
 
 # 내가 좋아하는 노래
@@ -34,7 +34,7 @@ download("https://www.youtube.com/playlist?list=PLL1k3JLqzzPTiU3zihcdIlMSZrgCCwt
 
 ## 예시 2: 영상 다운로드
 
-```py
+```python
 from playlist import download
 
 # 해외에서 떡상중이라는 공포 카드게임 (우주하마)
@@ -43,7 +43,7 @@ download("https://www.youtube.com/watch?v=mAd35515jro", "mp4", auto=True)
 
 ## 예시 3: 여러 플레이리스트를 묶어서 한 폴더에 저장
 
-```py
+```python
 from playlist import *
 
 # 클래식 음악
