@@ -5,8 +5,6 @@ playlist
 Download YouTube videos and music.
 
 """
-from __future__ import unicode_literals
-
 from timeit import default_timer
 
 import colorama
