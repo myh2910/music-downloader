@@ -273,7 +273,7 @@ def write_diff():
 		with open(path, "a", encoding="utf8") as diff:
 			curr_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 			diff.write(f"@ {curr_time} (+{len(tmp['add'])} -{len(tmp['del'])} \
-!{len(tmp['pop'])})")
+!{len(tmp['pop'])})\n")
 			for file in tmp['add']:
 				diff.write(f"+ {os.path.relpath(file, CONFIG['home'])}\n")
 			for file in tmp['del']:
