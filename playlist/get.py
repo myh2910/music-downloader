@@ -218,6 +218,10 @@ def export_to_m3u():
 def export_to_smpl():
 	"""
 	Export to Samsung playlist.
+
+	Save the generated playlist file in Phone -> Playlists and then go to Samsung
+	Music settings -> Manage playlists -> Import playlists and select your
+	playlist file.
 	"""
 	filename = f"{tmp['playlist']}.smpl"
 	path = os.path.join(CONFIG['home'], filename)
@@ -241,7 +245,7 @@ def export_to_smpl():
 			file.write('{"members": [')
 			file.write(",".join(
 				f"""\n\t{{"info": "/storage/emulated/0/{CONFIG['home']}/{name}", \
-"order": {idx + 1}, "type": 6553}}""" for idx, name in enumerate(tmp['name'])
+"order": {idx + 1}, "type": 65537}}""" for idx, name in enumerate(tmp['name'])
 			))
 			file.write('\n], "sortBy": 4}')
 
