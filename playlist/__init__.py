@@ -14,7 +14,7 @@ from .config import CONFIG
 from .utils import print_time
 
 __author__ = "Yohan Min"
-__version__ = "1.0.1"
+__version__ = "1.1.0"
 
 def download(url, ext="mp3", start=0, end=None, playlist=None, **kwargs):
 	"""

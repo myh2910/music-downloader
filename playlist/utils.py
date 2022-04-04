@@ -2,7 +2,6 @@
 Useful functions for other modules.
 
 """
-import glob
 import os
 import random
 
@@ -93,56 +92,6 @@ def sort_lines(lines, method):
 			print(f" [ERROR] 옵션 {_method}이 존재하지 않습니다.")
 			return False
 	return lines
-
-def create_playlist(playlist, out="m3u", method="name"):
-	"""
-	Generate a playlist file.
-
-	Parameters
-	----------
-	playlist : str
-		Playlist name.
-	out : str, optional
-		Playlist file extension ("m3u", "smpl").
-	method : str, optional
-		Playlist sorting method.
-	"""
-	colorama.init()
-	print(":: 플레이리스트 생성 중...")
-
-	m3u_path = f"{CONFIG['home']}/{playlist}.m3u"
-	smpl_path = f"{CONFIG['home']}/{playlist}.smpl"
-	_playlist = colored(playlist, "file")
-
-	if out == "m3u":
-		if not os.path.exists(f"{CONFIG['home']}/{playlist}"):
-			print(f" [ERROR] 플레이리스트 폴더 {_playlist}를 찾을 수 없습니다.")
-			return
-
-		lines = []
-		for ext in ["mp3", "mp4"]:
-			lines.extend(glob.glob(f"{CONFIG['home']}/{playlist}/*.{ext}"))
-
-		if not lines:
-			print(f" [ERROR] 플레이리스트 폴더 {_playlist}가 비어 있습니다.")
-			return
-
-		with open(m3u_path, "w", encoding="utf8") as m3u:
-			for file in sort_lines(lines, method):
-				m3u.write(f"{os.path.relpath(file, CONFIG['home'])}\n")
-	elif out == "smpl":
-		with open(m3u_path, "r", encoding = "utf8") as m3u:
-			music = m3u.readlines()
-			with open(smpl_path, "w", encoding = "utf8") as smpl:
-				smpl.write('{"members": [')
-				for idx, mp3 in enumerate(music):
-					smpl.write(f"""
-\t{{"info": "/storage/emulated/0/{CONFIG['home']}/{mp3}", "order": {idx + 1}, \
-"type": 65537}},"""
-					)
-				smpl.write('\n], "sortBy": 4}')
-
-	print(":: 플레이리스트 생성이 완료되었습니다.")
 
 def sort_playlist(playlist, method="suffle"):
 	"""
