@@ -6,9 +6,9 @@ import os
 import random
 from timeit import default_timer
 
-from .config import COLOR, CONFIG, LOCALE
+from .config import COLOR, CONFIG, LANG
 
-TEXT = LOCALE[CONFIG['locale']]
+TEXT = LANG[CONFIG['lang']]
 
 class Timer:
 	def __init__(self):

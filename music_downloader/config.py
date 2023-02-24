@@ -21,7 +21,7 @@ retries : int
 	The number of retries.
 output : str
 	The directory in which files will be downloaded.
-locale : str
+lang : str
 	Currently supports English and Korean only.
 
 """
@@ -75,10 +75,10 @@ CONFIG = {
 	'write_diff': True,
 	'retries': 2,
 	'output': "Music",
-	'locale': "ko"
+	'lang': "ko"
 }
 
-LOCALE = {
+LANG = {
 	'en': {
 		'hours': "%dh",
 		'minutes': "%dm",
