@@ -20,7 +20,7 @@ Simple music and video downloader based on [yt-dlp](https://github.com/yt-dlp/yt
 - `pip install colorama`
 - `sudo pacman -S yt-dlp ffmpeg atomicparsley`
 
-## Examples
+## Usage
 
 ```python
 from music_downloader import download

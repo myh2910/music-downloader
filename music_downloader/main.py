@@ -105,10 +105,7 @@ def extract_info(url, ext, playlist):
 				playlist_dict = ydl.extract_info(url, False)
 				break
 
-			except KeyboardInterrupt:
-				return False
-
-			except (ExtractorError, DownloadError):
+			except (KeyboardInterrupt, ExtractorError, DownloadError):
 				return False
 
 			except:
@@ -315,7 +312,11 @@ def write_diff():
 	if tmp['add'] or tmp['del'] or tmp['pop']:
 		path = os.path.join(CONFIG['outdir'], f"{tmp['playlist']}.diff")
 		with open(path, "a", encoding="utf8") as diff:
-			curr_time = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
+			curr_time = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %z")
+			if curr_time.endswith("00"):
+				curr_time = curr_time[:-2]
+			else:
+				curr_time = "%s:%s" % (curr_time[:-2], curr_time[-2:])
 
 			diff.write(f"@ {curr_time} (+{len(tmp['add'])} -{len(tmp['del'])} \
 !{len(tmp['pop'])})\n")
