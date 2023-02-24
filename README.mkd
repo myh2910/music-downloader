@@ -1,6 +1,6 @@
 # music-downloader
 
-Music and video downloader based on [yt-dlp](https://github.com/yt-dlp/yt-dlp). Visit [here](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) to see all the supported websites.
+Simple music and video downloader based on [yt-dlp](https://github.com/yt-dlp/yt-dlp). Visit [here](https://github.com/yt-dlp/yt-dlp/blob/master/supportedsites.md) to see all the supported websites.
 
 ## Requirements
 
@@ -25,13 +25,13 @@ Music and video downloader based on [yt-dlp](https://github.com/yt-dlp/yt-dlp). 
 ```python
 from music_downloader import download
 
-# Download playlist and export it to SMPL
+# Download playlist and export to Samsung Music Playlist
 download("https://www.youtube.com/playlist?list=PLOHoVaTp8R7dfrJW5pumS0iD_dhlXKv17", export_to_smpl=True)
 
-# Download MP4 video
+# Download video in MP4 format
 download("https://www.youtube.com/watch?v=DPJL488cfRw", ext="mp4")
 
-# Download multiple playlists in a same directory
+# Download playlists in a same directory
 for url in [
 	"https://www.youtube.com/playlist?list=OLAK5uy_nK7I5PC-l1wBk51voQI0cXgU1nFRp89gI",
 	"https://www.youtube.com/playlist?list=PL4kYDj2_jcU1Cohcaivkoh1AZaUeebEc0",
