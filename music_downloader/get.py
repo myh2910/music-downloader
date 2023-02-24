@@ -111,7 +111,7 @@ def extract_info(url, ext, playlist):
 
 	return tmp['playlist']
 
-def __init__(ext, start, end):
+def init(ext, start, end):
 	"""
 	Initialize module.
 

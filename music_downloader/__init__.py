@@ -45,7 +45,7 @@ def download(url, ext="mp3", playlist_start=0, playlist_end=None, playlist_name=
 	if extraction_status == False:
 		return False
 
-	get.__init__(ext, playlist_start, playlist_end)
+	get.init(ext, playlist_start, playlist_end)
 
 	if extraction_status:
 		if CONFIG['write_m3u']:
