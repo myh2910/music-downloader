@@ -1,5 +1,5 @@
-*.exe
-*.py
+/*
+!README.mkd
 */
-!playlist/
+!music_downloader/
 **__pycache__/
