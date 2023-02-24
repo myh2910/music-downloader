@@ -142,7 +142,7 @@ def init(ext, start, end):
 
 		tmp['name'].append(name)
 		tmp['url'].append(file.get('webpage_url'))
-		tmp['norm'].append(os.path.normpath(os.path.join(CONFIG['output'], name)))
+		tmp['norm'].append(os.path.normpath(os.path.join(CONFIG['outdir'], name)))
 
 def download_video():
 	"""
@@ -153,12 +153,12 @@ def download_video():
 	False or None
 	"""
 	if tmp['playlist']:
-		path = f"{CONFIG['output']}/{tmp['playlist']}/*"
-		tmp['ydl_opts']['outtmpl'] = f"{CONFIG['output']}/{tmp['playlist']}/\
+		path = f"{CONFIG['outdir']}/{tmp['playlist']}/*"
+		tmp['ydl_opts']['outtmpl'] = f"{CONFIG['outdir']}/{tmp['playlist']}/\
 %(title)s-%(id)s.%(ext)s"
 	else:
-		path = f"{CONFIG['output']}/*"
-		tmp['ydl_opts']['outtmpl'] = f"{CONFIG['output']}/\
+		path = f"{CONFIG['outdir']}/*"
+		tmp['ydl_opts']['outtmpl'] = f"{CONFIG['outdir']}/\
 %(title)s-%(id)s.%(ext)s"
 
 	downloaded = [os.path.normpath(file) for file in glob.glob(path)]
@@ -170,7 +170,7 @@ def download_video():
 
 		for idx in range(tmp['start'], tmp['end']):
 			file = tmp['norm'][idx]
-			path = COLOR['file'] % os.path.relpath(file, CONFIG['output'])
+			path = COLOR['file'] % os.path.relpath(file, CONFIG['outdir'])
 
 			if file in downloaded:
 				if len(glob.glob(f"{os.path.splitext(file)[0]}.*")) == 1:
@@ -217,7 +217,7 @@ def export_to_m3u():
 	Export to M3U playlist.
 	"""
 	filename = f"{tmp['playlist']}.m3u"
-	path = os.path.join(CONFIG['output'], filename)
+	path = os.path.join(CONFIG['outdir'], filename)
 	playlist_file = COLOR['file'] % filename
 
 	if os.path.exists(path):
@@ -231,8 +231,8 @@ def export_to_m3u():
 		confirm = "y"
 
 	if confirm in ["Y", "y"]:
-		if not os.path.exists(CONFIG['output']):
-			os.mkdir(CONFIG['output'])
+		if not os.path.exists(CONFIG['outdir']):
+			os.mkdir(CONFIG['outdir'])
 		with open(path, "w", encoding="utf8") as file:
 			file.write("\n".join(tmp['name']))
 
@@ -245,7 +245,7 @@ def export_to_smpl():
 	playlist file.
 	"""
 	filename = f"{tmp['playlist']}.smpl"
-	path = os.path.join(CONFIG['output'], filename)
+	path = os.path.join(CONFIG['outdir'], filename)
 	playlist_file = COLOR['file'] % filename
 
 	if os.path.exists(path):
@@ -259,13 +259,13 @@ def export_to_smpl():
 		confirm = "y"
 
 	if confirm in ["Y", "y"]:
-		if not os.path.exists(CONFIG['output']):
-			os.mkdir(CONFIG['output'])
+		if not os.path.exists(CONFIG['outdir']):
+			os.mkdir(CONFIG['outdir'])
 
 		with open(path, "w", encoding = "utf8") as file:
 			file.write('{"members": [')
 			file.write(",".join(
-				f"""\n\t{{"info": "/storage/emulated/0/{CONFIG['output']}/{name}", \
+				f"""\n\t{{"info": "/storage/emulated/0/{CONFIG['outdir']}/{name}", \
 "order": {idx + 1}, "type": 65537}}""" for idx, name in enumerate(tmp['name'])
 			))
 			file.write('\n], "sortBy": 4}')
@@ -276,11 +276,11 @@ def write_diff():
 	"""
 	tmp['del'] = []
 
-	for file in glob.glob(f"{CONFIG['output']}/{tmp['playlist']}/*"):
+	for file in glob.glob(f"{CONFIG['outdir']}/{tmp['playlist']}/*"):
 		if os.path.normpath(file) in tmp['norm']:
 			continue
 
-		path = COLOR['file'] % os.path.relpath(file, CONFIG['output'])
+		path = COLOR['file'] % os.path.relpath(file, CONFIG['outdir'])
 		if CONFIG['auto']:
 			print(TEXT['deleting_file'] % path)
 			confirm = "y"
@@ -292,15 +292,15 @@ def write_diff():
 			tmp['del'].append(file)
 
 	if tmp['add'] or tmp['del'] or tmp['pop']:
-		path = os.path.join(CONFIG['output'], f"{tmp['playlist']}.diff")
+		path = os.path.join(CONFIG['outdir'], f"{tmp['playlist']}.diff")
 		with open(path, "a", encoding="utf8") as diff:
 			curr_time = datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S %Z")
 
 			diff.write(f"@ {curr_time} (+{len(tmp['add'])} -{len(tmp['del'])} \
 !{len(tmp['pop'])})\n")
 			for file in tmp['add']:
-				diff.write(f"+ {os.path.relpath(file, CONFIG['output'])}\n")
+				diff.write(f"+ {os.path.relpath(file, CONFIG['outdir'])}\n")
 			for file in tmp['del']:
-				diff.write(f"- {os.path.relpath(file, CONFIG['output'])}\n")
+				diff.write(f"- {os.path.relpath(file, CONFIG['outdir'])}\n")
 			for file in tmp['pop']:
-				diff.write(f"! {os.path.relpath(file, CONFIG['output'])}\n")
+				diff.write(f"! {os.path.relpath(file, CONFIG['outdir'])}\n")

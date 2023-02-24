@@ -79,7 +79,7 @@ def sort_playlist(playlist, method="suffle"):
 	"""
 	print(TEXT['sorting_playlist'])
 
-	path = os.path.join(CONFIG['output'], f"{playlist}.m3u")
+	path = os.path.join(CONFIG['outdir'], f"{playlist}.m3u")
 
 	if not os.path.exists(path):
 		print(COLOR['err'] % TEXT['no_playlist_file_error'] % COLOR['file'] % f"{playlist}.m3u")

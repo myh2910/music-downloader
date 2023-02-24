@@ -19,7 +19,7 @@ write_diff : bool
 	Whether to write a log file.
 retries : int
 	The number of retries.
-output : str
+outdir : str
 	The directory in which files will be downloaded.
 lang : str
 	Currently supports English and Korean only.
@@ -74,7 +74,7 @@ CONFIG = {
 	'write_smpl': False,
 	'write_diff': True,
 	'retries': 2,
-	'output': "Music",
+	'outdir': "Music",
 	'lang': "ko"
 }
 
