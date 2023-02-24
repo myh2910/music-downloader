@@ -25,18 +25,18 @@ Simple music and video downloader based on [yt-dlp](https://github.com/yt-dlp/yt
 ```python
 from music_downloader import download
 
-# Download playlist and export to Samsung Music Playlist
-download("https://www.youtube.com/playlist?list=PLOHoVaTp8R7dfrJW5pumS0iD_dhlXKv17", export_to_smpl=True)
+# Download playlist and export to M3U and SMPL
+download("https://www.youtube.com/playlist?list=PLOHoVaTp8R7dfrJW5pumS0iD_dhlXKv17", export_to=["m3u", "smpl"])
 
 # Download video in MP4 format
 download("https://www.youtube.com/watch?v=DPJL488cfRw", ext="mp4")
 
-# Download playlists in a same directory
+# Download playlists in a same directory and export to SMPL
 for url in [
 	"https://www.youtube.com/playlist?list=OLAK5uy_nK7I5PC-l1wBk51voQI0cXgU1nFRp89gI",
 	"https://www.youtube.com/playlist?list=PL4kYDj2_jcU1Cohcaivkoh1AZaUeebEc0",
 	"https://www.youtube.com/playlist?list=PL4kYDj2_jcU11mmV6EUZ9YYhUwTzPSA5L",
 	"https://www.youtube.com/playlist?list=OLAK5uy_mJQgJg3fqotcUcRs5AijgBLfderDqIEwE"
 ]:
-	download(url, outdir="Music/Classical")
+	download(url, outdir="Music/Classical", smpl_outdir="/storage/emulated/0/Music/Classical", export_to=["smpl"])
 ```
