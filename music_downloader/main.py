@@ -1,5 +1,5 @@
 """
-Get YouTube videos and playlist data.
+Download data from URL and export to playlist files.
 
 """
 from __future__ import unicode_literals
@@ -7,6 +7,7 @@ from __future__ import unicode_literals
 import glob
 import os
 from datetime import datetime
+from timeit import default_timer
 
 import yt_dlp
 from yt_dlp.utils import MEDIA_EXTENSIONS, DownloadError, ExtractorError, sanitize_filename
@@ -15,6 +16,36 @@ from .config import COLOR, CONFIG, LANG
 
 TEXT = LANG[CONFIG['lang']]
 tmp = {}
+
+class Timer:
+	def __init__(self):
+		self.elapsed_time = 0
+		self.end_text = TEXT['download_completed'] % COLOR['num']
+
+	def start(self):
+		self.elapsed_time += -default_timer()
+
+	def pause(self):
+		self.elapsed_time += default_timer()
+
+	def end(self):
+		minutes, seconds = divmod(round(self.elapsed_time), 60)
+		hours, minutes = divmod(minutes, 60)
+
+		time_list = [
+			TEXT['hours'] % hours,
+			TEXT['minutes'] % minutes,
+			TEXT['seconds'] % seconds
+		]
+
+		if hours > 0:
+			idx = 0
+		elif minutes > 0:
+			idx = 1
+		else:
+			idx = 2
+
+		print(self.end_text % ' '.join(time_list[idx:]))
 
 def get_ydl_opts(ext):
 	"""
@@ -41,7 +72,7 @@ def get_ydl_opts(ext):
 		tmp['ydl_opts']['merge_output_format'] = ext
 		return True
 
-	print(COLOR['err'] % TEXT['unsupported_extension_error'] % COLOR['name'] % f'"{ext}"')
+	print(COLOR['err'] % TEXT['invalid_extension_error'] % COLOR['name'] % f'"{ext}"')
 	return False
 
 def extract_info(url, ext, playlist):
@@ -212,63 +243,53 @@ def download_video():
 						os.remove(ext)
 					retries -= 1
 
-def export_to_m3u():
+def export_playlist(exts):
 	"""
-	Export to M3U playlist.
+	Export to playlist files.
+
+	Parameters
+	----------
+	exts : list of str
+		List of playlist formats to export. Currently M3U and SMPL are supported
+		only.
+
+		In case of Samsung Music playlist (SMPL), save the generated playlist file
+		in Phone -> Playlists, go to Samsung Music settings -> Manage playlists ->
+		Import playlists and select your playlist file.
 	"""
-	filename = f"{tmp['playlist']}.m3u"
-	path = os.path.join(CONFIG['outdir'], filename)
-	playlist_file = COLOR['file'] % filename
+	for ext in exts:
+		file_content = ""
 
-	if os.path.exists(path):
-		if CONFIG['auto']:
-			print(TEXT['updating_file'] % playlist_file)
-			confirm = "y"
-		else:
-			confirm = input(TEXT['file_update_confirmation'] % playlist_file).strip()
-	else:
-		print(TEXT['generating_file'] % playlist_file)
-		confirm = "y"
-
-	if confirm in ["Y", "y"]:
-		if not os.path.exists(CONFIG['outdir']):
-			os.mkdir(CONFIG['outdir'])
-		with open(path, "w", encoding="utf8") as file:
-			file.write("\n".join(tmp['name']))
-
-def export_to_smpl():
-	"""
-	Export to Samsung (SMPL) playlist.
-
-	Save the generated playlist file in Phone -> Playlists and then go to Samsung
-	Music settings -> Manage playlists -> Import playlists and select your
-	playlist file.
-	"""
-	filename = f"{tmp['playlist']}.smpl"
-	path = os.path.join(CONFIG['outdir'], filename)
-	playlist_file = COLOR['file'] % filename
-
-	if os.path.exists(path):
-		if CONFIG['auto']:
-			print(TEXT['updating_file'] % playlist_file)
-			confirm = "y"
-		else:
-			confirm = input(TEXT['confirm_file_update'] % playlist_file).strip()
-	else:
-		print(TEXT['generating_file'] % playlist_file)
-		confirm = "y"
-
-	if confirm in ["Y", "y"]:
-		if not os.path.exists(CONFIG['outdir']):
-			os.mkdir(CONFIG['outdir'])
-
-		with open(path, "w", encoding = "utf8") as file:
-			file.write('{"members": [')
-			file.write(",".join(
-				f"""\n\t{{"info": "/storage/emulated/0/{CONFIG['outdir']}/{name}", \
+		match ext:
+			case "m3u":
+				file_content = "\n".join(tmp['name'])
+			case "smpl":
+				file_content = '{"members": ['
+				file_content += ",".join(
+					f"""\n\t{{"info": "{CONFIG['smpl_outdir']}/{name}", \
 "order": {idx + 1}, "type": 65537}}""" for idx, name in enumerate(tmp['name'])
-			))
-			file.write('\n], "sortBy": 4}')
+				)
+				file_content += '\n], "sortBy": 4}'
+			case _:
+				continue
+
+		filename = f"{tmp['playlist']}.{ext}"
+		path = os.path.join(CONFIG['outdir'], filename)
+		playlist_file = COLOR['file'] % filename
+
+		if os.path.exists(path):
+			if CONFIG['auto']:
+				print(TEXT['updating_file'] % playlist_file)
+				confirm = "y"
+			else:
+				confirm = input(TEXT['confirm_file_update'] % playlist_file).strip()
+		else:
+			print(TEXT['generating_file'] % playlist_file)
+			confirm = "y"
+
+		if confirm in ["Y", "y"]:
+			with open(path, "w", encoding="utf8") as file:
+				file.write(file_content)
 
 def write_diff():
 	"""
