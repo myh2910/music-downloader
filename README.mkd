@@ -38,5 +38,5 @@ for url in [
 	"https://www.youtube.com/playlist?list=PL4kYDj2_jcU11mmV6EUZ9YYhUwTzPSA5L",
 	"https://www.youtube.com/playlist?list=OLAK5uy_mJQgJg3fqotcUcRs5AijgBLfderDqIEwE"
 ]:
-	download(url, output="Music/Classical")
+	download(url, outdir="Music/Classical")
 ```
