@@ -249,7 +249,7 @@ def export_playlist(exts):
             case "smpl":
                 file_content = '{"members": ['
                 file_content += ",".join(
-                    f"""\n\t{{"info": "{CONFIG['smpl_outdir']}/{name}", "order": {idx + 1}, "type": 65537}}"""
+                    f"""\n  {{"info": "{CONFIG['smpl_outdir']}/{name}", "order": {idx + 1}, "type": 65537}}"""
                     for idx, name in enumerate(tmp["name"])
                 )
                 file_content += '\n], "sortBy": 4}'
