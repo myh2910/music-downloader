@@ -1,4 +1,3 @@
-"""Download music and video from YouTube and more."""
 from . import main
 from .config import CONFIG
 

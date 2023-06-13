@@ -236,9 +236,9 @@ def export_playlist(exts):
         exts (list of str): List of playlist formats to export. Currently M3U
         and SMPL are supported only.
 
-        In case of Samsung Music playlist (SMPL), save the generated playlist file
-        in Phone -> Playlists, go to Samsung Music settings -> Manage playlists ->
-        Import playlists and select your playlist file.
+        In case of Samsung Music playlist (SMPL), save the generated playlist
+        file in "Phone -> Playlists", go to Samsung Music "Settings -> Manage
+        playlists -> Import playlists" and select your playlist file.
     """
     for ext in exts:
         file_content = ""

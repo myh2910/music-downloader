@@ -1,18 +1,3 @@
-"""The configuration file.
-
-Options:
-    ydl_opts (dict): Options for the downloader.
-    audio_opts (dict): Audio options.
-    video_opts (dict): Video options.
-    auto (bool): Whether to skip user confirmation and automate all processes.
-    write_diff (bool): Whether to write a log file.
-    retries (int): The number of retries.
-    lang (str): The language to display.
-    outdir (str): The directory where files will be downloaded.
-    smpl_outdir (str): The directory in a phone where Samsung Music playlist
-    files will be located.
-    export_to (list of str): List of playlist extensions to be exported.
-"""
 import colorama
 from colorama import Fore
 
