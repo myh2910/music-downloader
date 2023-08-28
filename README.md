@@ -13,8 +13,8 @@ all the supported websites.
 
 ### Windows
 
-- Unzip `ffmpeg-git-full.7z` from
-  <https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z> and move the files
+- Unzip `ffmpeg-release-full.7z` from
+  <https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-full.7z> and move the files
   `ffmpeg.exe` and `ffprobe.exe` from `bin` folder to this repository.
 - Unzip `AtomicParsleyWindows.zip` from
   <https://github.com/wez/atomicparsley/releases/latest> and move the file
